@@ -31,10 +31,10 @@ end
 %read in diseases of interest (this should be modified to ensure that
 %diseases are captured by keywords
 [num,txt,raw]=xlsread([In_open,'Diseases_of_interest.xlsx']);
-dx_labels=txt(:,1);
-dx_key_words=txt(:,4:9);
-dx_organ=txt(:,2);
-dx_system=txt(:,3);
+dx_labels=txt(2:end,1);
+dx_key_words=txt(2:end,4:9);
+dx_organ=txt(2:end,2);
+dx_system=txt(2:end,3);
 
 %initialise code variable
 code_self_v2=cell(length(dx_labels),1);
@@ -81,8 +81,15 @@ for i=1:length(dx_labels)
         if ~isempty(dx)
             newpat = caseInsensitivePattern(dx); %make variable name case insensitive 
             ind=find(contains(txt_icd9(:,2),newpat)==1);
+
             code_icd9_v2{i}=[code_icd9_v2{i}; convertCharsToStrings(txt_icd9(ind,1))];
+            
+            
+            [~ dup]=unique(code_icd9_v2{i});
+            code_icd9_v2{i}(dup)=[];
+            
             description_icd9{i}=[description_icd9{i}; txt_icd9(ind,2)];
+%             return
         end
     end
 end
@@ -106,6 +113,8 @@ end
 % m=csvread([In_open,'MHQ/mhq_code.csv'],1,0);
 
 
+% similarities discrepancies for older ICD9 and new ICD9
+
 load([path_old_dx,'DiseaseCode2.mat'])
 
 description_new_icd9=cell(0);
@@ -114,7 +123,6 @@ cross_check_icd9 = cell(0);
 description_old_icd9 = cell(0);
 code_old_icd9 = cell(0);
 
-% similarities discrepancies for older ICD9 and new ICD9
 for i=1:length(dGrp)
     idc = find(contains(dx_labels, caseInsensitivePattern(dGrp(i))));
     idx = (idc(1));
@@ -167,13 +175,40 @@ for i=1:length(dGrp)
 end
 
 
+% new diseases for ICD9
+
+description_others = cell(0);
+code_others = cell(0);
+
+for i=1:length(dx_labels)
+    if (contains(dx_labels(i), caseInsensitivePattern(dGrp))) 
+        continue
+    end
+    description_others= [description_others; description_icd9{i}];
+    code_others = [code_others; code_icd9_v2{i}];
+end
+cross_check_others = cell(length(description_others),1);
+cross_check_others(:) = {''};
+description_old_others  =cell(length(description_others),1);
+description_old_others(:) = {''};
+code_old_others  = cell(length(description_others),1);
+code_old_others(:) = {''};
+
+description_new_icd9 = [description_new_icd9; description_others];
+code_new_icd9 = [code_new_icd9; code_others];
+cross_check_icd9 = [cross_check_icd9; cross_check_others];
+description_old_icd9 = [description_old_icd9; description_old_others];
+code_old_icd9 = [code_old_icd9; code_old_others];
+
+
+% similarities discrepancies for older ICD10 and new ICD10
+
 description_new_icd10=cell(0);
 code_new_icd10 = cell(0);
 cross_check_icd10 = cell(0);
 description_old_icd10 = cell(0);
 code_old_icd10 = cell(0);
 
-% similarities discrepancies for older ICD10 and new ICD10
 for i=1:length(dGrp)
     idc = find(contains(dx_labels, caseInsensitivePattern(dGrp(i))));
     idx = (idc(1));
@@ -224,44 +259,36 @@ for i=1:length(dGrp)
     code_old_icd10 = [code_old_icd10; code_old_tmp];
 end
 
+% new diseases for ICD10
+
+description_others = cell(0);
+code_others = cell(0);
+
+for i=1:length(dx_labels)
+    if (contains(dx_labels(i), caseInsensitivePattern(dGrp))) 
+        continue
+    end
+    description_others= [description_others; description_icd10{i}];
+    code_others = [code_others; code_icd10_v2{i}];
+end
+cross_check_others = cell(length(description_others),1);
+cross_check_others(:) = {''};
+description_old_others  =cell(length(description_others),1);
+description_old_others(:) = {''};
+code_old_others  = cell(length(description_others),1);
+code_old_others(:) = {''};
+
+description_new_icd10 = [description_new_icd10; description_others];
+code_new_icd10 = [code_new_icd10; code_others];
+cross_check_icd10 = [cross_check_icd10; cross_check_others];
+description_old_icd10 = [description_old_icd10; description_old_others];
+code_old_icd10 = [code_old_icd10; code_old_others];
+
 filename = 'description_codes_v1_v2.xlsx';
 T_icd9 = table(description_new_icd9, code_new_icd9, cross_check_icd9, description_old_icd9, code_old_icd9);
 T_icd10 = table(description_new_icd10, code_new_icd10, cross_check_icd10, description_old_icd10, code_old_icd10);
 
 writetable(T_icd9, filename, 'Sheet', 'icd9','Range','A1');
 writetable(T_icd10, filename, 'Sheet', 'icd10','Range','A1');
-
-
-description_others = cell();
-code_others = cell();
-
-for i=2:length(dx_labels)
-    if (contains(dx_labels(i), caseInsensitivePattern(dGrp))) 
-        continue
-    end
-    description_others= [description_others];
-    code_others = [code_others; code_icd10_v2{i}];
-
-    
-end
-
-
-%ICD10
-[num_icd10,txt_icd10,raw_icd10]=xlsread([In_open,'primarycare_codings/all_lkps_maps_v3.xlsx'],'icd10_lkp');
-
-for i=1:length(dx_labels)
-    for key=1:size(dx_key_words,2)
-        dx=dx_key_words{i,key};
-        if ~isempty(dx)
-            newpat = caseInsensitivePattern(dx); %make variable name case insensitive 
-            ind=find(contains(txt_icd10(:,5),newpat)==1);
-            code_icd10_v2{i}=[code_icd10_v2{i}; convertCharsToStrings(txt_icd10(ind,1))];
-            description_icd10{i}=[description_icd10{i}; convertCharsToStrings(txt_icd10(ind,5))];
-        end
-    end
-end
-
-
-
 
 

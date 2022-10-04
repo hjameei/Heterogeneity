@@ -32,10 +32,10 @@ end
 %read in diseases of interest (this should be modified to ensure that
 %diseases are captured by keywords
 [num,txt,raw]=xlsread([In_open,'Diseases_of_interest.xlsx']);
-dx_labels=txt(:,1);
-dx_key_words=txt(:,4:9);
-dx_organ=txt(:,2);
-dx_system=txt(:,3);
+dx_labels=txt(2:end,1);
+dx_key_words=txt(2:end,4:9);
+dx_organ=txt(2:end,2);
+dx_system=txt(2:end,3);
 
 %initialise code variable
 code_self_v2=cell(length(dx_labels),1);
@@ -82,8 +82,15 @@ for i=1:length(dx_labels)
         if ~isempty(dx)
             newpat = caseInsensitivePattern(dx); %make variable name case insensitive 
             ind=find(contains(txt_icd9(:,2),newpat)==1);
+
             code_icd9_v2{i}=[code_icd9_v2{i}; convertCharsToStrings(txt_icd9(ind,1))];
+            
+            
+            [~ dup]=unique(code_icd9_v2{i});
+            code_icd9_v2{i}(dup)=[];
+            
             description_icd9{i}=[description_icd9{i}; txt_icd9(ind,2)];
+%             return
         end
     end
 end
@@ -175,7 +182,7 @@ end
 description_others = cell(0);
 code_others = cell(0);
 
-for i=2:length(dx_labels)
+for i=1:length(dx_labels)
     if (contains(dx_labels(i), caseInsensitivePattern(dGrp))) 
         continue
     end
@@ -259,7 +266,7 @@ end
 description_others = cell(0);
 code_others = cell(0);
 
-for i=2:length(dx_labels)
+for i=1:length(dx_labels)
     if (contains(dx_labels(i), caseInsensitivePattern(dGrp))) 
         continue
     end
