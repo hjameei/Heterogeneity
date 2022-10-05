@@ -34,9 +34,16 @@ end
 %diseases are captured by keywords
 [num,txt,raw]=xlsread([In_open,'Diseases_of_interest.xlsx']);
 dx_labels=txt(2:end,1);
-dx_key_words=txt(2:end,4:9);
+dx_key_words=txt(2:end,4:20);
 dx_organ=txt(2:end,2);
 dx_system=txt(2:end,3);
+
+%additional inclusion and exclusion critera for diagnoses
+[~,txt,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Exclude_code_icd9');
+dx_code_exc_icd9=num(2:end,2:4);
+
+[~,txt,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Include_code_icd9');
+dx_code_inc_icd9=num(2:end,2:8);
 
 %initialise code variable
 code_self_v2=cell(length(dx_labels),1);
@@ -72,6 +79,7 @@ for i=1:length(dx_labels)
             description_self{i}=[description_self{i}; txt(ind,2)];
         end
     end
+    
     %index duplicated codes
     [~, dup]=unique(code_self_v2{i});
     
@@ -137,6 +145,8 @@ end
 
 load([path_old_dx,'DiseaseCode2.mat'])
 
+
+labels_new_icd9 = cell(0);
 description_new_icd9=cell(0);
 code_new_icd9 = cell(0);
 cross_check_icd9 = cell(0);
@@ -150,8 +160,7 @@ for i=1:length(dGrp)
 
     % find codes and descriptions that are present in both versions 1 and 2
     [overlapping_code ind_code_icd9_v2 ind_code9]=intersect(code_icd9_v2{idx},code9_trimmed);
-    [a1, a2, ~] = intersect(convertCharsToStrings(txt_icd9(:,1)), overlapping_code);
-
+    
     % find codes and descriptions that are present in version 1 but not in
     % version 2
     [discrepant_code ind]=setdiff(code9_trimmed, code_icd9_v2{idx});
@@ -162,7 +171,7 @@ for i=1:length(dGrp)
     [discrepant_code_v2 ind_v2]=setdiff(code_icd9_v2{idx}, code9_trimmed);
     [x1_v2, x2_v2, ~] = intersect(convertCharsToStrings(txt_icd9(:,1)), discrepant_code_v2);
 
-    cross_check_overlaps = cell(length(a1),1);
+    cross_check_overlaps = cell(length(overlapping_code),1);
     cross_check_overlaps(:) = {'overlaps'};
 
     cross_check_missing = cell(length(x1_v2),1);
@@ -186,7 +195,10 @@ for i=1:length(dGrp)
         cross_check_tmp = [cross_check_tmp; empties];
 
     end
-
+    
+    labels_tmp = cell(length(description_new_tmp),1);
+    labels_tmp(:) = dGrp(i);
+    labels_new_icd9=[labels_new_icd9; labels_tmp]; 
     description_new_icd9 = [description_new_icd9; description_new_tmp];
     code_new_icd9 = [code_new_icd9; code_new_tmp];
     cross_check_icd9 = [cross_check_icd9; cross_check_tmp];
@@ -199,6 +211,7 @@ end
 
 description_others = cell(0);
 code_others = cell(0);
+label_others = cell(0);
 
 for i=1:length(dx_labels)
     if (contains(dx_labels(i), caseInsensitivePattern(dGrp))) 
@@ -206,6 +219,9 @@ for i=1:length(dx_labels)
     end
     description_others= [description_others; description_icd9{i}];
     code_others = [code_others; code_icd9_v2{i}];
+    labels_tmp = cell(length(description_icd9{i}),1);
+    labels_tmp(:)=dx_labels(i);
+    label_others = [label_others; labels_tmp];
 end
 cross_check_others = cell(length(description_others),1);
 cross_check_others(:) = {''};
@@ -214,6 +230,7 @@ description_old_others(:) = {''};
 code_old_others  = cell(length(description_others),1);
 code_old_others(:) = {''};
 
+labels_new_icd9 = [labels_new_icd9; label_others];
 description_new_icd9 = [description_new_icd9; description_others];
 code_new_icd9 = [code_new_icd9; code_others];
 cross_check_icd9 = [cross_check_icd9; cross_check_others];
@@ -223,6 +240,7 @@ code_old_icd9 = [code_old_icd9; code_old_others];
 
 % similarities discrepancies for older ICD10 and new ICD10
 
+labels_new_icd10 = cell(0);
 description_new_icd10=cell(0);
 code_new_icd10 = cell(0);
 cross_check_icd10 = cell(0);
@@ -272,11 +290,15 @@ for i=1:length(dGrp)
         cross_check_tmp = [cross_check_tmp; empties];
     end
 
+    labels_tmp = cell(length(description_new_tmp),1);
+    labels_tmp(:) = dGrp(i);
+    labels_new_icd10=[labels_new_icd10; labels_tmp]; 
     description_new_icd10 = [description_new_icd10; description_new_tmp];
     code_new_icd10 = [code_new_icd10; code_new_tmp];
     cross_check_icd10 = [cross_check_icd10; cross_check_tmp];
     description_old_icd10 = [description_old_icd10; description_old_tmp];
     code_old_icd10 = [code_old_icd10; code_old_tmp];
+    
 end
 
 % new diseases for ICD10
@@ -284,12 +306,16 @@ end
 description_others = cell(0);
 code_others = cell(0);
 
+
 for i=1:length(dx_labels)
     if (contains(dx_labels(i), caseInsensitivePattern(dGrp))) 
         continue
     end
     description_others= [description_others; description_icd10{i}];
     code_others = [code_others; code_icd10_v2{i}];
+    labels_tmp = cell(length(description_icd10{i}),1);
+    labels_tmp(:)=dx_labels(i);
+    label_others = [label_others; labels_tmp];
 end
 cross_check_others = cell(length(description_others),1);
 cross_check_others(:) = {''};
@@ -303,10 +329,11 @@ code_new_icd10 = [code_new_icd10; code_others];
 cross_check_icd10 = [cross_check_icd10; cross_check_others];
 description_old_icd10 = [description_old_icd10; description_old_others];
 code_old_icd10 = [code_old_icd10; code_old_others];
+labels_new_icd10 = [labels_new_icd10; label_others];
 
 filename = [Out_open 'description_codes_v1_v2.xlsx'];
-T_icd9 = table(description_new_icd9, code_new_icd9, cross_check_icd9, description_old_icd9, code_old_icd9);
-T_icd10 = table(description_new_icd10, code_new_icd10, cross_check_icd10, description_old_icd10, code_old_icd10);
+T_icd9 = table(labels_new_icd9, description_new_icd9, code_new_icd9, cross_check_icd9, description_old_icd9, code_old_icd9);
+T_icd10 = table(labels_new_icd10, description_new_icd10, code_new_icd10, cross_check_icd10, description_old_icd10, code_old_icd10);
 
 writetable(T_icd9, filename, 'Sheet', 'icd9','Range','A1');
 writetable(T_icd10, filename, 'Sheet', 'icd10','Range','A1');
