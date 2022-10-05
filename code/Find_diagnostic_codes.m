@@ -15,6 +15,7 @@ switch x
         In_private = In_private_Maria;
         In_open = In_open_Maria;
         path_old_dx = path_old_dx_Maria;
+        Out_open = Out_open_Maria;
     case 2
         In_private = In_private_Ye;
         In_open = In_open_Ye;
@@ -56,6 +57,7 @@ description_mhq=cell(length(dx_labels),1);
 %include all cancer codes in self report spreadsheet
 ind_cancer=find(contains(dx_labels,'Cancer')==1);
 code_self_v2{ind_cancer}=num_self(:,1);
+description_self{ind_cancer}=txt_self(:,2); 
 
 %noncancer codes
 [num,txt,raw]=xlsread([In_open,'self_report/self_report_medical_noncancer_codes.xlsx']);
@@ -70,6 +72,12 @@ for i=1:length(dx_labels)
             description_self{i}=[description_self{i}; txt(ind,2)];
         end
     end
+    %index duplicated codes
+    [~, dup]=unique(code_self_v2{i});
+    
+    %remove duplicated codes
+    code_self_v2{i}=code_self_v2{i}(dup);
+    description_self{i}=description_self{i}(dup);
 end
 
 
@@ -80,19 +88,22 @@ for i=1:length(dx_labels)
     for key=1:size(dx_key_words,2)
         dx=dx_key_words{i,key};
         if ~isempty(dx)
-            newpat = caseInsensitivePattern(dx); %make variable name case insensitive 
-            ind=find(contains(txt_icd9(:,2),newpat)==1);
-
+            newpat = caseInsensitivePattern(dx); %make keyword case insensitive
+            ind=find(contains(txt_icd9(:,2),newpat)==1); %index all codes with keyword
+            
             code_icd9_v2{i}=[code_icd9_v2{i}; convertCharsToStrings(txt_icd9(ind,1))];
-            
-            
-            [~ dup]=unique(code_icd9_v2{i});
-            code_icd9_v2{i}(dup)=[];
-            
             description_icd9{i}=[description_icd9{i}; txt_icd9(ind,2)];
-%             return
+            
         end
     end
+    
+    %index duplicated codes
+    [~, dup]=unique(code_icd9_v2{i});
+    
+    %remove duplicated codes
+    code_icd9_v2{i}=code_icd9_v2{i}(dup);
+    description_icd9{i}=description_icd9{i}(dup);
+
 end
 
 %ICD10
@@ -108,6 +119,13 @@ for i=1:length(dx_labels)
             description_icd10{i}=[description_icd10{i}; convertCharsToStrings(txt_icd10(ind,5))];
         end
     end
+    
+    %index duplicated codes
+    [~, dup]=unique(code_icd10_v2{i});
+    
+    %remove duplicated codes
+    code_icd10_v2{i}=code_icd10_v2{i}(dup);
+    description_icd10{i}=description_icd10{i}(dup);
 end
 
 %MHQ
@@ -286,7 +304,7 @@ cross_check_icd10 = [cross_check_icd10; cross_check_others];
 description_old_icd10 = [description_old_icd10; description_old_others];
 code_old_icd10 = [code_old_icd10; code_old_others];
 
-filename = 'description_codes_v1_v2.xlsx';
+filename = [Out_open 'description_codes_v1_v2.xlsx'];
 T_icd9 = table(description_new_icd9, code_new_icd9, cross_check_icd9, description_old_icd9, code_old_icd9);
 T_icd10 = table(description_new_icd10, code_new_icd10, cross_check_icd10, description_old_icd10, code_old_icd10);
 
