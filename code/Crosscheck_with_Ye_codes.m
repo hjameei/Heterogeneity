@@ -49,18 +49,18 @@ for i=1:length(dGrp)
     code9_trimmed=string(code9{i});
 
     % find codes and descriptions that are present in both versions 1 and 2
-    [overlapping_code ind_code_icd9_v2 ind_code9]=intersect(code_icd9_v2{idx},code9_trimmed);
+    [overlapping_code ind_code_icd9 ind_code9]=intersect(code_icd9{idx},code9_trimmed);
     [a1, a2, ~] = intersect(convertCharsToStrings(txt_icd9(:,1)), overlapping_code);
 
     
     % find codes and descriptions that are present in version 1 but not in
     % version 2
-    [discrepant_code ind]=setdiff(code9_trimmed, code_icd9_v2{idx});
+    [discrepant_code ind]=setdiff(code9_trimmed, code_icd9{idx});
     [x1, x2, ~] = intersect(convertCharsToStrings(txt_icd9(:,1)), discrepant_code);
 
     % find codes and descriptions that are present in version 2 but not in
     % version 1
-    [discrepant_code_v2 ind_v2]=setdiff(code_icd9_v2{idx}, code9_trimmed);
+    [discrepant_code_v2 ind_v2]=setdiff(code_icd9{idx}, code9_trimmed);
     [x1_v2, x2_v2, ~] = intersect(convertCharsToStrings(txt_icd9(:,1)), discrepant_code_v2);
 
     cross_check_overlaps = cell(length(overlapping_code),1);
@@ -110,7 +110,7 @@ for i=1:length(dx_labels)
         continue
     end
     description_others= [description_others; description_icd9{i}];
-    code_others = [code_others; code_icd9_v2{i}];
+    code_others = [code_others; code_icd9{i}];
     labels_tmp = cell(length(description_icd9{i}),1);
     labels_tmp(:)=dx_labels(i);
     label_others = [label_others; labels_tmp];
@@ -145,17 +145,17 @@ for i=1:length(dGrp)
     code10_trimmed=strtrim(string(code10{i}));
 
     % find codes and descriptions that are present in both versions 1 and 2
-    [overlapping_code ind_code_icd10_v2 ind_code10]=intersect(code_icd10_v2{idx},code10_trimmed);
+    [overlapping_code ind_code_icd10 ind_code10]=intersect(code_icd10{idx},code10_trimmed);
     [a1, a2, ~] = intersect(convertCharsToStrings(txt_icd10(:,1)), overlapping_code);
 
     % find codes and descriptions that are present in version 1 but not in
     % version 2
-    [discrepant_code ind]=setdiff(code10_trimmed, code_icd10_v2{idx});
+    [discrepant_code ind]=setdiff(code10_trimmed, code_icd10{idx});
     [x1, x2, ~] = intersect(convertCharsToStrings(txt_icd10(:,1)), discrepant_code);
 
     % find codes and descriptions that are present in version 2 but not in
     % version 1
-    [discrepant_code_v2 ind_v2]=setdiff(code_icd10_v2{idx}, code10_trimmed);
+    [discrepant_code_v2 ind_v2]=setdiff(code_icd10{idx}, code10_trimmed);
     [x1_v2, x2_v2, ~] = intersect(convertCharsToStrings(txt_icd10(:,1)), discrepant_code_v2);
 
     cross_check_overlaps = cell(length(a1),1);
@@ -204,7 +204,7 @@ for i=1:length(dx_labels)
         continue
     end
     description_others= [description_others; description_icd10{i}];
-    code_others = [code_others; code_icd10_v2{i}];
+    code_others = [code_others; code_icd10{i}];
     labels_tmp = cell(length(description_icd10{i}),1);
     labels_tmp(:)=dx_labels(i);
     label_others = [label_others; labels_tmp];
