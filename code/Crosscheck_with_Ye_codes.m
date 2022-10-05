@@ -1,8 +1,8 @@
-%Find codes for each diagnosis
-%%%% TEST ADD %%%
 clear all
 close all
 
+
+% similarities discrepancies for older (Ye's codes) ICD9 and new ICD9
 run('Set_data_path.m');
 
 prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Ye press 2\nFor Hadis press 3\nFor others press 4\n";
@@ -30,148 +30,8 @@ switch x
         path_old_dx = path_old_dx_Other;
 end
 
-%read in diseases of interest (this should be modified to ensure that
-%diseases are captured by keywords
-[num,txt,raw]=xlsread([In_open,'Diseases_of_interest.xlsx']);
-dx_labels=txt(2:end,1);
-dx_key_words=txt(2:end,4:18);
-dx_organ=txt(2:end,2);
-dx_system=txt(2:end,3);
-
-%additional inclusion and exclusion critera for diagnoses
-[~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Exclude_code_icd9');
-dx_code_exc_icd9=raw(2:end,2:4);
-
-[~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Include_code_icd9');
-dx_code_inc_icd9=raw(2:end,2:8);
-
-%initialise code variable
-code_self_v2=cell(length(dx_labels),1);
-code_icd9_v2=cell(length(dx_labels),1);
-code_icd10_v2=cell(length(dx_labels),1);
-code_mhq=cell(length(dx_labels),1);
-
-description_self=cell(length(dx_labels),1);
-description_icd9=cell(length(dx_labels),1);
-description_icd10=cell(length(dx_labels),1);
-description_mhq=cell(length(dx_labels),1);
-
-%SELF REPORT
-%downloaded from https://biobank.ndph.ox.ac.uk/showcase/coding.cgi?id=3
-%cancer codes
-[num_self,txt_self,raw_self]=xlsread([In_open,'self_report/self_report_medical_cancer_codes.xlsx']);
-
-%include all cancer codes in self report spreadsheet
-ind_cancer=find(contains(dx_labels,'Cancer')==1);
-code_self_v2{ind_cancer}=num_self(:,1);
-description_self{ind_cancer}=txt_self(:,2); 
-
-%noncancer codes
-[num,txt,raw]=xlsread([In_open,'self_report/self_report_medical_noncancer_codes.xlsx']);
-
-for i=1:length(dx_labels)
-    for key=1:size(dx_key_words,2)
-        dx=dx_key_words{i,key};
-        if ~isempty(dx)
-            newpat = caseInsensitivePattern(dx);
-            ind=find(contains(txt(:,2),newpat)==1);
-            code_self_v2{i}=[code_self_v2{i}; num(ind,1)];
-            description_self{i}=[description_self{i}; txt(ind,2)];
-        end
-    end
-    
-    %index duplicated codes
-    [~, dup]=unique(code_self_v2{i});
-    
-    %remove duplicated codes
-    code_self_v2{i}=code_self_v2{i}(dup);
-    description_self{i}=description_self{i}(dup);
-end
-
-
-%ICD9
-[num_icd9,txt_icd9,raw_icd9]=xlsread([In_open,'primarycare_codings/all_lkps_maps_v3.xlsx'],'icd9_lkp');
-
-for i=1:length(dx_labels)
-    for key=1:size(dx_key_words,2)
-        dx=dx_key_words{i,key};
-        if ~isempty(dx)
-            newpat = caseInsensitivePattern(dx); %make keyword case insensitive
-            ind=find(contains(txt_icd9(:,2),newpat)==1); %index all codes with keyword
-            
-            code_icd9_v2{i}=[code_icd9_v2{i}; convertCharsToStrings(txt_icd9(ind,1))];
-            description_icd9{i}=[description_icd9{i}; txt_icd9(ind,2)];
-            
-        end
-    end
-    
-    %manually exclude specific codes
-    Exclude=rmmissing(string(dx_code_exc_icd9(i,:)));
-    if ~isempty(Exclude)
-        for criteria=1:size(Exclude,2)
-            [~, ind, ~]=intersect(code_icd9_v2{i},Exclude(criteria)); %find code to exclude
-            
-            if ~isempty(ind)
-                code_icd9_v2{i}(ind)=[];
-                description_icd9{i}(ind)=[];
-            end
-            
-        end
-    end
-    
-    %manually include specific codes
-    Include=rmmissing(string(dx_code_inc_icd9(i,:)));
-    if ~isempty(Include)
-        for criteria=1:size(Include,2)
-            [code, ind, ~]=intersect(code_icd9_v2{i},Include(criteria));
-            if isempty(ind)
-                code_icd9_v2{i}=[code_icd9_v2{i}; Include(criteria)];
-                ind_code_orig=find(contains(txt_icd9(:,1),Include(criteria))==1);
-                description_icd9{i}=[description_icd9{i}; txt_icd9(ind_code_orig,2)];
-            end
-        end
-    end
-    
-    %index duplicated codes
-    [~, dup]=unique(code_icd9_v2{i});
-    
-    %remove duplicated codes
-    code_icd9_v2{i}=code_icd9_v2{i}(dup);
-    description_icd9{i}=description_icd9{i}(dup);
-
-    if i==28
-        return
-    end
-end
-
-%ICD10
-[num_icd10,txt_icd10,raw_icd10]=xlsread([In_open,'primarycare_codings/all_lkps_maps_v3.xlsx'],'icd10_lkp');
-
-for i=1:length(dx_labels)
-    for key=1:size(dx_key_words,2)
-        dx=dx_key_words{i,key};
-        if ~isempty(dx)
-            newpat = caseInsensitivePattern(dx); %make variable name case insensitive 
-            ind=find(contains(txt_icd10(:,5),newpat)==1);
-            code_icd10_v2{i}=[code_icd10_v2{i}; convertCharsToStrings(txt_icd10(ind,1))];
-            description_icd10{i}=[description_icd10{i}; convertCharsToStrings(txt_icd10(ind,5))];
-        end
-    end
-    
-    %index duplicated codes
-    [~, dup]=unique(code_icd10_v2{i});
-    
-    %remove duplicated codes
-    code_icd10_v2{i}=code_icd10_v2{i}(dup);
-    description_icd10{i}=description_icd10{i}(dup);
-end
-
-%MHQ
-% m=csvread([In_open,'MHQ/mhq_code.csv'],1,0);
-
-
-
-% similarities discrepancies for older ICD9 and new ICD9
+filename = [Out_open 'vars_to_crosscheck.mat'];
+load(filename);
 
 load([path_old_dx,'DiseaseCode2.mat'])
 
@@ -190,6 +50,8 @@ for i=1:length(dGrp)
 
     % find codes and descriptions that are present in both versions 1 and 2
     [overlapping_code ind_code_icd9_v2 ind_code9]=intersect(code_icd9_v2{idx},code9_trimmed);
+    [a1, a2, ~] = intersect(convertCharsToStrings(txt_icd9(:,1)), overlapping_code);
+
     
     % find codes and descriptions that are present in version 1 but not in
     % version 2
@@ -335,7 +197,7 @@ end
 
 description_others = cell(0);
 code_others = cell(0);
-
+label_others = cell(0);
 
 for i=1:length(dx_labels)
     if (contains(dx_labels(i), caseInsensitivePattern(dGrp))) 
@@ -367,5 +229,3 @@ T_icd10 = table(labels_new_icd10, description_new_icd10, code_new_icd10, cross_c
 
 writetable(T_icd9, filename, 'Sheet', 'icd9','Range','A1');
 writetable(T_icd10, filename, 'Sheet', 'icd10','Range','A1');
-
-
