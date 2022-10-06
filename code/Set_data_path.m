@@ -10,6 +10,7 @@ path_old_dx_Ye = '';
 In_private_Hadis = '';
 In_open_Hadis = '/Users/hadisjameei/Library/CloudStorage/OneDrive-TheUniversityofMelbourne/PhD research/UK Biobank/HETEROGENEITY/Inputs/Diagnosis/';
 path_old_dx_Hadis = '/Users/hadisjameei/Library/CloudStorage/OneDrive-TheUniversityofMelbourne/PhD research/UK Biobank/Diagnoses/';
+Out_open_Hadis = '/Users/hadisjameei/Library/CloudStorage/OneDrive-TheUniversityofMelbourne/PhD research/UK Biobank/HETEROGENEITY/outputs/Diagnosis/';
 
 In_private_Other = '';
 In_open_Other = '';
