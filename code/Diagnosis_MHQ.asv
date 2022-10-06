@@ -3,15 +3,55 @@
 clear all
 close all
 
-load med_instance0.mat
+run('Set_data_path.m');
+
+prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Ye press 2\nFor Hadis press 3\nFor others press 4\n";
+x = input(prompt);
+
+
+% change paths for the corresponding user
+switch x
+    case 1
+        In_private = In_private_Maria;
+        In_open = In_open_Maria;
+        path_old_dx = path_old_dx_Maria;
+        Out_open = Out_open_Maria;
+    case 2
+        In_private = In_private_Ye;
+        In_open = In_open_Ye;
+        path_old_dx = path_old_dx_Ye;
+    case 3
+        In_private = In_private_Hadis;
+        In_open = In_open_Hadis;
+        path_old_dx = path_old_dx_Hadis;
+    otherwise
+        In_private = In_private_Other;
+        In_open = In_open_Other;
+        path_old_dx = path_old_dx_Other;
+end
+
 %contains med_num (variable data) and med_txt (variable names)
+load ([In_private,'med_instance0.mat']);
+
+%contains data field 20400-0.0, whcih identifies 
+%whether a UKBB participant completed the questionnaire and when.
+[num,txt,raw]=xlsread([In_private,'mb1958_MHQ_completed.xlsx']);
+data_only = both(:,1);
+s=datenum(data_only ,'dd-mm-yyyy HH:MM');
+date=datestr(s,'dd-mm-yyyy HH:MM:SS');
+dx_code_exc_icd9=raw(2:end,2:4);
+load ([In_private_Maria,'med_instance0.mat']);
+
+
+return
 
 %find variables of interest
 %fields containing 20544 relate to the MHQ
 ind_MHQ=find(contains(med_txt(1,:),'20544')==1);
-ind_diagnostic_field=find(contains(med_txt(1,:),'20544-0.1')==1);
+
 
 %Define individuals who completed the questionaire
 %field 20400-0.0 identifies whether a UKBB participant completed the questionnaire and when.
+ind_completed=find(contains(med_txt(1,:),'20544-0.1')==1);
+MHQ_completed=find(~isnan(med_num(:,ind_completed)));
 
-MHQ_completed= %>% filter(!is.na(f.20400.0.0))
