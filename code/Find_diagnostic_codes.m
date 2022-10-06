@@ -1,5 +1,5 @@
 %Find codes for each diagnosis
-%%%% TEST ADD %%%
+
 clear all
 close all
 
@@ -45,6 +45,12 @@ dx_code_exc_icd9=raw(2:end,2:4);
 
 [~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Include_code_icd9');
 dx_code_inc_icd9=raw(2:end,2:15);
+
+[~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Exclude_code_icd10');
+dx_code_exc_icd10=raw(2:end,2:47);
+
+[~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Include_code_icd10');
+dx_code_inc_icd10=raw(2:end,2:45);
 
 [~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Exclude_code_mhq');
 dx_code_exc_mhq=raw(2:end,2:4);
@@ -165,6 +171,33 @@ for i=1:length(dx_labels)
         end
     end
     
+    %manually include specific codes
+    Include=rmmissing(string(dx_code_inc_icd10(i,:)));
+    if ~isempty(Include)
+        for criteria=1:size(Include,2)
+            [code, ind, ~]=intersect(code_icd10{i},Include(criteria));
+            if isempty(ind)
+                code_icd10{i}=[code_icd10{i}; Include(criteria)];
+                ind_code_orig=find(strcmp(txt_icd10(:,1),Include(criteria))==1);
+                description_icd10{i}=[description_icd10{i}; txt_icd10(ind_code_orig,2)];
+            end
+        end
+    end
+    
+    %manually exclude specific codes
+    Exclude=rmmissing(string(dx_code_exc_icd10(i,:)));
+    if ~isempty(Exclude)
+        for criteria=1:size(Exclude,2)
+            [~, ind, ~]=intersect(code_icd10{i},Exclude(criteria)); %find code to exclude
+            
+            if ~isempty(ind)
+                code_icd10{i}(ind)=[];
+                description_icd10{i}(ind)=[];
+            end
+            
+        end
+    end
+    
     %index duplicated codes
     [~, dup]=unique(code_icd10{i});
     
@@ -175,6 +208,7 @@ end
 
 filename = [Out_open 'vars_to_crosscheck.mat'];
 save(filename);
+
 
 %MHQ
 %downloaded from https://biobank.ndph.ox.ac.uk/showcase/coding.cgi?id=1401
@@ -197,7 +231,7 @@ for i=1:length(dx_labels)
         for criteria=1:size(Include,2)
             [code, ind, ~]=intersect(code_mhq{i},str2double(Include(criteria)));
             if isempty(ind)
-                code_mhq{i}=[code_mhq{i}; Include(criteria)];
+                code_mhq{i}=[code_mhq{i}; str2double(Include(criteria))];
                 ind_code_orig=find(strcmp(string(num_mhq(:,1)),Include(criteria))==1);
                 description_mhq{i}=[description_mhq{i}; txt_mhq(ind_code_orig,2)];
             end
@@ -231,8 +265,9 @@ end
 
 
 filename = [Out_open 'disease_codes.mat'];
-save(filename,'code_icd9','code_icd10','code_mhq',...
-    'description_icd9','description_icd10','description_mhq');
+save(filename,'dx_labels','dx_organ','dx_system',...
+              'code_self_v2','code_icd9','code_icd10','code_mhq',...
+              'description_self','description_icd9','description_icd10','description_mhq');
 
 
 
