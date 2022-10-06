@@ -24,6 +24,7 @@ switch x
         In_private = In_private_Hadis;
         In_open = In_open_Hadis;
         path_old_dx = path_old_dx_Hadis;
+        Out_open = Out_open_Hadis;
     otherwise
         In_private = In_private_Other;
         In_open = In_open_Other;

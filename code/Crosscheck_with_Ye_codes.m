@@ -24,6 +24,7 @@ switch x
         In_private = In_private_Hadis;
         In_open = In_open_Hadis;
         path_old_dx = path_old_dx_Hadis;
+        Out_open = Out_open_Hadis;
     otherwise
         In_private = In_private_Other;
         In_open = In_open_Other;
@@ -224,6 +225,10 @@ code_old_icd10 = [code_old_icd10; code_old_others];
 labels_new_icd10 = [labels_new_icd10; label_others];
 
 filename = [Out_open 'description_codes_v1_v2.xlsx'];
+if exist(filename, 'file')==2
+  delete(filename);
+end
+
 T_icd9 = table(labels_new_icd9, description_new_icd9, code_new_icd9, cross_check_icd9, description_old_icd9, code_old_icd9);
 T_icd10 = table(labels_new_icd10, description_new_icd10, code_new_icd10, cross_check_icd10, description_old_icd10, code_old_icd10);
 
