@@ -41,6 +41,7 @@ switch x
         In_private = In_private_Hadis;
         In_open = In_open_Hadis;
         path_old_dx = path_old_dx_Hadis;
+        Out_open = Out_open_Hadis;
     otherwise
         In_private = In_private_Other;
         In_open = In_open_Other;
@@ -95,12 +96,18 @@ end
 ind=find(contains(s{1,:},'20001-0.')==1);
 num=s{2:end,ind};
 
+%find the corresponding column for cancer in data
+[num_labels,txt_labels,raw_labels]=xlsread([In_open,'Diseases_of_interest.xlsx']);
+dx_labels=txt_labels(2:end,1);
+newpat = caseInsensitivePattern("Cancer");
+ind_cancer_label=find(contains(dx_labels,newpat)==1);
+
 %number of self-reported cancers
 ind_cancer=find(contains(s{1,:},'134-0.')==1);
 ind_cancer2=str2double(s{2:end,ind_cancer});
 ind_cancer3=find(ind_cancer2>0);%number of self-reported cancer
 subs_cancer=subID(ind_cancer3);
-subs_self{end}=subs_cancer;
+subs_self{ind_cancer_label}=subs_cancer;
 
 %age of cancer when first diagnosed
 ind=find(contains(s{1,:},'20007-0.')==1);
@@ -110,7 +117,7 @@ num_age=str2double(num_age);
 age_cancer=min(num_age,[],2);
 ind_nonan=find(~isnan(age_cancer));
 age_cancer=age_cancer(ind_nonan);
-age_diag_self{end}=age_cancer; % -1=uncertain or unknown
+age_diag_self{ind_cancer_label}=age_cancer; % -1=uncertain or unknown
 clear num
 %%%%%
 
@@ -118,7 +125,7 @@ clear num
 fprintf('\nICD 9 diagnoses\n')
 ind=find(contains(s{1,:},'41271')==1);
 num=s{2:end,ind};
-num_icd9=str2double(num);
+num_icd9=string(num);
 header=s(1,ind);
 
 
@@ -132,7 +139,7 @@ date_icd9=datetime(dates,'Format',formatOut);
 
 
 %Date of assessment
-dateFile=[In_private,'/data_fields_53_52_34_dates.csv'];
+dateFile=[In_private,'data_fields_53_52_34_dates.csv'];
 
 ttds = datastore(dateFile,...
     'DatetimeType','text','ReadVariableNames',0);
@@ -167,7 +174,7 @@ for i=1:length(code_icd9) % loop over diseases
     age_tmp=[];
     date_icd9_tmp=[];
     for j=1:size(num_icd9,1) % loop over subjects
-        x=str2double(num_icd9(j,:));
+        x=num_icd9(j,:);
         val=intersect(x,code);
         if ~isempty(val)
             ind_sub=[ind_sub,j];
