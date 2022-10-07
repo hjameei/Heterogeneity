@@ -325,10 +325,18 @@ for i=1:size(txt_icd10,1)
 end
 
 ind_health=intersect(ind_health_icd9,ind_health_icd10);
-subID_hc_icd=subID(ind_health);
+subID_hc_icd=str2num(cell2mat(subID(ind_health)));
 
-%subID_dx_all = cells(length(diseases),1) comprising all subject IDs with a
-%diagnosis, reglarless of source (self, mhq, icd, etc)
+
+% find all subject IDs with a diagnosis, reglarless of source (self, mhq, icd, etc)
+subID_dx_all = [];
+for i=1:length(dx_labels)
+    subID_dx_all = [subs_icd9{i}; subs_icd10{i}; subs_self{i}];
+end
+subID_dx_all = str2num(cell2mat(subID_dx_all));
+[~, dup]=unique(subID_dx_all); %find duplicated individuals and remove them
+subID_dx_all=subID_dx_all(dup);
+
 
 %subID_healthy_all = cells(length(diseases),1) comprising subject IDs that
 %did not endorse ANY diagnosis, regardless of source (self, mhq, icd, etc)
