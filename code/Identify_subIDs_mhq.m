@@ -25,6 +25,8 @@ switch x
         In_private = In_private_Hadis;
         In_open = In_open_Hadis;
         path_old_dx = path_old_dx_Hadis;
+        Out_open = Out_open_Hadis;
+        Out_private = Out_private_Hadis;
     otherwise
         In_private = In_private_Other;
         In_open = In_open_Other;
@@ -59,6 +61,7 @@ load(filename,'code_mhq','dx_labels','dx_organ','dx_system');
 
 
 subID_dx_mhq=cell(length(dx_labels),1);
+date_dx_mhq=cell(length(dx_labels),1);
 for i=1:length(dx_labels)
    dx_codes=code_mhq{i};
   if   ~isempty(dx_codes)
@@ -66,6 +69,7 @@ for i=1:length(dx_labels)
       for code_1=1:length(dx_codes)
             [ind_subID_row, ind_var_col] = find(data_num(:,ind_MHQ)==dx_codes(code_1));
             subID_dx_mhq{i} = [subID_dx_mhq{i}; mhq_data_id(ind_subID_row)];
+            date_dx_mhq{i} = [date_dx_mhq{i}; table2array(date_completed_mhq(ind_subID_row,1))];
       end
   end
   
@@ -97,7 +101,7 @@ subID_with_zero_total = mhq_data_id(find_total==0);
 filename = [Out_private, 'subID_mhq.mat'];
 save(filename,'dx_labels','dx_organ','dx_system',...
     'subID_completed_mhq','subID_PNA_or_missing_mhq','subID_healthy_mhq',...
-    'subID_dx_mhq','date_completed_mhq');
+    'subID_dx_mhq','date_completed_mhq', 'date_dx_mhq');
 
 
 
