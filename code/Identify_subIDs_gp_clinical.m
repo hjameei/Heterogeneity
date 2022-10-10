@@ -54,7 +54,7 @@ dateFile=[In_private,'/data_fields_53_52_34_dates.csv'];
 dates=readtable(dateFile);
 formatOut='dd/MM/yyyy';
 assessment_date=datetime(dates{:,6},'Format',formatOut); %date at first MRI visit
-date_body_all=assessment_date;
+date_MRI_all=assessment_date;
 subID=dates{:,1};
 
 %disease code
@@ -90,11 +90,11 @@ while hasdata(ttds)
     for i=1:length(ind)
         ind(i)=find(str2double(subid{i})==subID);
     end
-    date_body=date_body_all(ind);
+    date_MRI=date_MRI_all(ind);
     
     %%%%%%
     fprintf('Loop over disease group\n')
-    i=grp_num; %1:length(dx_labels)
+    i=str2double(grp_num); %1:length(dx_labels)
     fprintf('%s\n',dx_labels{i});
     subv2=[];
     datev2=[];
@@ -116,11 +116,11 @@ while hasdata(ttds)
             %date of diagnosis
             datev2tmp=date(ind2);
             
-            %number of days between diagnosis and body measures
+            %number of days between diagnosis and MRI measures
             datev2tmp=datev2tmp(~cellfun(@isempty,datev2tmp)); %delete potential empty entries
             
             if ~isempty(datev2tmp)
-                numdays_v2=datenum(datev2tmp,formatOut)-datenum(date_body(j));
+                numdays_v2=datenum(datev2tmp,formatOut)-datenum(date_MRI(j));
                 
                 %choose the earliest one
                 [~,ind_min]=min(numdays_v2);
@@ -142,11 +142,11 @@ while hasdata(ttds)
             %date of diagnosis
             datev3tmp=date(ind3);
             
-            %number of days between diagnosis and body measures
+            %number of days between diagnosis and MRI measures
             datev3tmp=datev3tmp(~cellfun(@isempty,datev3tmp)); %delete potential empty entries
             
             if ~isempty(datev3tmp)
-                numdays_v3=datenum(datev3tmp,formatOut)-datenum(date_body(j));
+                numdays_v3=datenum(datev3tmp,formatOut)-datenum(date_MRI(j));
                 
                 %choose the earliest one
                 [~,ind_min]=min(numdays_v3);
@@ -161,16 +161,19 @@ while hasdata(ttds)
         end
         show_progress(j,length(subid),frst);frst=1;
     end
-    subs_readv2{i}=subv2;
-    date_readv2{i}=datev2;
+    subID_readv2{i}=subv2;
+    date_completed_readv2{i}=datev2;
     
-    subs_readv3{i}=subv3;
-    date_readv3{i}=datev3;
+    subID_readv3{i}=subv3;
+    date_completed_readv3{i}=datev3;
+    subID_completed_gp = subid;
     
     T=T+1;
     save([out,'subID_GPClinical',num2str(i),'_block',num2str(T),'.mat'],...
-        'subs_readv2','date_readv2','subs_readv3','date_readv3')
+        'subID_readv2','date_completed_readv2','subID_readv3','date_completed_readv3','subID_completed_gp')
     fprintf('Complete data block %d, block size=%d\n\n',T,ttds.ReadSize)
+    
+
     
 end
 toc;
