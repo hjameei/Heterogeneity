@@ -134,7 +134,7 @@ for i=1:length(dx_labels)
         end
     end
     
-    %index duplicated codes
+        %index duplicated codes
     [~, dup]=unique(code_icd9{i});
     
     %remove duplicated codes
@@ -155,6 +155,7 @@ for i=1:length(dx_labels)
         end
     end
     
+
 
 end
 
@@ -185,13 +186,6 @@ for i=1:length(dx_labels)
         end
     end
     
-    %index duplicated codes
-    [~, dup]=unique(code_icd10{i});
-    
-    %remove duplicated codes
-    code_icd10{i}=code_icd10{i}(dup);
-    description_icd10{i}=description_icd10{i}(dup);
-    
     %manually exclude specific codes
     Exclude=rmmissing(string(dx_code_exc_icd10(i,:)));
     if ~isempty(Exclude)
@@ -206,7 +200,12 @@ for i=1:length(dx_labels)
         end
     end
     
-
+    %index duplicated codes
+    [~, dup]=unique(code_icd10{i});
+    
+    %remove duplicated codes
+    code_icd10{i}=code_icd10{i}(dup);
+    description_icd10{i}=description_icd10{i}(dup);
     
     %adding alternative codes, which are available in ICD10
     code_alternative = [];
@@ -262,13 +261,6 @@ for i=1:length(dx_labels)
         end
     end
     
-    %index duplicated codes
-    [~, dup]=unique(code_mhq{i});
-    
-    %remove duplicated codes
-    code_mhq{i}=code_mhq{i}(dup);
-    description_mhq{i}=description_mhq{i}(dup);
-    
     %manually exclude specific codes
     Exclude=rmmissing(string(dx_code_exc_mhq(i,:)));
     if ~isempty(Exclude)
@@ -283,6 +275,14 @@ for i=1:length(dx_labels)
         end
     end
     
+
+    %index duplicated codes
+    [~, dup]=unique(code_mhq{i});
+    
+    %remove duplicated codes
+    code_mhq{i}=code_mhq{i}(dup);
+    description_mhq{i}=description_mhq{i}(dup);
+   
     
 end
 

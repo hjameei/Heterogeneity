@@ -232,9 +232,11 @@ filename = [Out_open 'description_codes_v1_v2.xlsx'];
 if exist(filename, 'file')==2
   delete(filename);
 end
-
+          
+          
 T_icd9 = table(labels_new_icd9, description_new_icd9, code_new_icd9, cross_check_icd9, description_old_icd9, code_old_icd9);
 T_icd10 = table(labels_new_icd10, description_new_icd10, code_new_icd10, cross_check_icd10, description_old_icd10, code_old_icd10);
+
 
 writetable(T_icd9, filename, 'Sheet', 'icd9','Range','A1');
 writetable(T_icd10, filename, 'Sheet', 'icd10','Range','A1');
@@ -244,6 +246,8 @@ if exist(filename_new, 'file')==2
   delete(filename_new);
 end
 
+
+    
 T_icd9_new = table(labels_new_icd9, description_new_icd9, code_new_icd9);
 T_icd10_new = table(labels_new_icd10, description_new_icd10, code_new_icd10);
 
