@@ -3,3 +3,5 @@
 .Rproj.user
 
 code/.Rhistory
+
+outputs/Diagnosis/vars_to_crosscheck.mat
