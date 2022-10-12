@@ -225,6 +225,114 @@ description_old_icd10 = [description_old_icd10; description_old_others];
 code_old_icd10 = [code_old_icd10; code_old_others];
 labels_new_icd10 = [labels_new_icd10; label_others];
 
+% similarities for diseases in older self and new self codes
+
+[num_self_noncancer,txt_self_noncancer,~]=xlsread([In_open,'self_report/self_report_medical_noncancer_codes.xlsx']);
+[num_self_cancer,txt_self_cancer,~]=xlsread([In_open,'self_report/self_report_medical_cancer_codes.xlsx']);
+
+labels_new_self = cell(0);
+description_new_self=cell(0);
+code_new_self = cell(0);
+cross_check_self = cell(0);
+description_old_self = cell(0);
+code_old_self = cell(0);
+
+for i=1:length(dGrp)
+    idc = find(contains(dx_labels, caseInsensitivePattern(dGrp(i))));
+    idx = (idc(1));
+    code_self_trimmed=strtrim(string(code_self{i}));
+    code_Self_v2_trimmed = strtrim(string(code_self_v2{i}));
+
+    if contains(dGrp(i), caseInsensitivePattern('Cancer'))
+        num_self_v2 = strtrim(string(num_self_cancer));
+        txt_self_v2 = txt_self_cancer;
+    else
+        num_self_v2 = strtrim(string(num_self_noncancer));
+        txt_self_v2 = txt_self_noncancer;
+    end
+
+    
+    % find codes and descriptions that are present in both versions 1 and 2
+    [overlapping_code ind_code_self_new ind_code_self]=intersect(code_self_trimmed,code_Self_v2_trimmed);
+    [a1, a2, ~] = intersect(num_self_v2(:,1), overlapping_code);
+
+    % find codes and descriptions that are present in version 1 but not in
+    % version 2
+    [discrepant_code ind]=setdiff(code_self_trimmed, code_Self_v2_trimmed);
+    [x1, x2, ~] = intersect(num_self_v2(:,1), discrepant_code);
+
+    % find codes and descriptions that are present in version 2 but not in
+    % version 1
+    [discrepant_code_v2 ind_v2]=setdiff(code_Self_v2_trimmed, code_self_trimmed);
+    [x1_v2, x2_v2, ~] = intersect(num_self_v2(:,1), discrepant_code_v2);
+
+    cross_check_overlaps = cell(length(a1),1);
+    cross_check_overlaps(:) = {'overlaps'};
+
+    cross_check_missing = cell(length(x1_v2),1);
+    cross_check_missing(:) = {'missing'};
+
+    description_new_tmp = [txt_self_v2(a2,2); txt_self_v2(x2_v2,2)];
+    code_new_tmp = [num_self_v2(a2,1); num_self_v2(x2_v2,1)];
+    cross_check_tmp = [cross_check_overlaps; cross_check_missing];
+    description_old_tmp = [txt_self_v2(x2,5);];
+    code_old_tmp = num_self_v2(x2,1);
+
+    add_empties = length(description_new_tmp)-length(description_old_tmp);
+    empties = cell(abs(add_empties),1);
+    empties(:) = {''};
+    if add_empties > 0
+        description_old_tmp = [description_old_tmp; empties];
+        code_old_tmp = [code_old_tmp; empties];
+    elseif add_empties < 0
+        description_new_tmp = [description_new_tmp; empties];
+        code_new_tmp = [code_new_tmp; empties];
+        cross_check_tmp = [cross_check_tmp; empties];
+    end
+
+    labels_tmp = cell(length(description_new_tmp),1);
+    labels_tmp(:) = dGrp(i);
+
+    labels_new_self=[labels_new_self; labels_tmp]; 
+    description_new_self = [description_new_self; description_new_tmp];
+    code_new_self = [code_new_self; code_new_tmp];
+    cross_check_self = [cross_check_self; cross_check_tmp];
+    description_old_self = [description_old_self; description_old_tmp];
+    code_old_self = [code_old_self; code_old_tmp];
+
+end
+
+
+% new diseases for self
+
+description_others = cell(0);
+code_others = cell(0);
+label_others = cell(0);
+
+for i=1:length(dx_labels)
+    if (contains(dx_labels(i), caseInsensitivePattern(dGrp))) 
+        continue
+    end
+    description_others= [description_others; description_self{i}];
+    code_others = [code_others; strtrim(string(code_self_v2{i}))];
+    labels_tmp = cell(length(description_self{i}),1);
+    labels_tmp(:)=dx_labels(i);
+    label_others = [label_others; labels_tmp];
+end
+cross_check_others = cell(length(description_others),1);
+cross_check_others(:) = {''};
+description_old_others  =cell(length(description_others),1);
+description_old_others(:) = {''};
+code_old_others  = cell(length(description_others),1);
+code_old_others(:) = {''};
+
+description_new_self = [description_new_self; description_others];
+code_new_self = [code_new_self; code_others];
+cross_check_self = [cross_check_self; cross_check_others];
+description_old_self = [description_old_self; description_old_others];
+code_old_self = [code_old_self; code_old_others];
+labels_new_self = [labels_new_self; label_others];
+
 
 % saving results
 
@@ -236,21 +344,24 @@ end
           
 T_icd9 = table(labels_new_icd9, description_new_icd9, code_new_icd9, cross_check_icd9, description_old_icd9, code_old_icd9);
 T_icd10 = table(labels_new_icd10, description_new_icd10, code_new_icd10, cross_check_icd10, description_old_icd10, code_old_icd10);
+T_self = table(labels_new_self, description_new_self, code_new_self, cross_check_self, description_old_self, code_old_self);
 
 
 writetable(T_icd9, filename, 'Sheet', 'icd9','Range','A1');
 writetable(T_icd10, filename, 'Sheet', 'icd10','Range','A1');
+writetable(T_self, filename, 'Sheet', 'self','Range','A1');
 
 filename_new = [Out_open 'description_codes_new.xlsx'];
 if exist(filename_new, 'file')==2
   delete(filename_new);
 end
 
-
     
 T_icd9_new = table(labels_new_icd9, description_new_icd9, code_new_icd9);
 T_icd10_new = table(labels_new_icd10, description_new_icd10, code_new_icd10);
+T_sefl_new = table(labels_new_self, description_new_self, code_new_self);
 
 writetable(T_icd9_new, filename_new, 'Sheet', 'icd9','Range','A1');
 writetable(T_icd10_new, filename_new, 'Sheet', 'icd10','Range','A1');
+writetable(T_sefl_new, filename_new, 'Sheet', 'self','Range','A1');
 
