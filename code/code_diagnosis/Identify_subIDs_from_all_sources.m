@@ -36,7 +36,8 @@ switch x
 end
  
 
-load([In_private,'GP_clinical/GPdata_all.mat']);
+load([Out_private,'GPdata_all.mat']);
+
 grp_num=45;
 %remove duplicate IDs and retain earliest diagnosis
 %read v2
@@ -62,6 +63,7 @@ for g=1:grp_num
     end
 end
  
+
 %remove duplicate IDs and retain earliest diagnosis
 %read v3
 for g=1:grp_num
@@ -211,8 +213,8 @@ for i=1:size(date_dx_mhq,2)
 end
 
 
-
-for i=1:size(subID_icd9,2)
+for i=1:size(subID_icd9,2) %looping over dx_labels 
+    
     subID_icd{i}=[subID_icd9{i}; subID_icd10{i}];
     
     %index and removedduplicated codes

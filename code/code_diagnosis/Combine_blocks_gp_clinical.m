@@ -10,7 +10,8 @@ close all;
 
 run('Set_data_path.m');
 
-x = 2;
+prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Ye press 2\nFor Hadis press 3\nFor others press 4\n";
+x = input(prompt);
 
 
 % change paths for the corresponding user
@@ -40,7 +41,7 @@ end
 
 
 % Get case ID list
-d = dir([Out_open,'/GPdata/']);
+d = dir([Out_private,'GPdata/GPdata/']);
 case_list = {d.name};
 ind = find(contains(case_list,'GPClinical'));
 case_list_tmp =case_list(ind);
@@ -53,34 +54,35 @@ subs_readv3_all={};
 subID_completed_gp_all={};
 for g=1:grp_num
     %case_list = replace( case_list_tmp , 'GPdataGrp1' , ['GPdataGrp',num2str(g)]) ;
-    ind=find(contains(case_list_tmp,['GPClinical',num2str(g)])==1);
+    ind=find(contains(case_list_tmp,['GPClinical',num2str(g),'_'])==1);
     case_list=case_list_tmp(ind);
 
     for i=1:length(case_list)
         x=case_list(i);
 	x
-        Y=strcat(Out_open,'/GPdata/',x);
+        Y=strcat(Out_private,'/GPdata/GPdata/',x);
         
         
         GPdata=load(Y{1});
         
         
-        date_readv2_all{i}=GPdata.date_completed_readv2{:};
-        date_readv3_all{i}=GPdata.date_completed_readv3{:};
-        subs_readv2_all{i}=GPdata.subID_readv2{:};
-        subs_readv3_all{i}=GPdata.subID_readv3{:};
-        subID_completed_gp_all{i}=GPdata.subID_completed_gp{:};
+        date_readv2_all{i}=GPdata.date_completed_readv2{g};
+        date_readv3_all{i}=GPdata.date_completed_readv3{g};
+        subs_readv2_all{i}=GPdata.subID_readv2{g};
+        subs_readv3_all{i}=GPdata.subID_readv3{g};
+        subID_completed_gp_all{i}=GPdata.subID_completed_gp{g};
     
     end
-    
+
     date_completed_readv2{:,g}=cat(1,date_readv2_all{:});
     date_completed_readv3{:,g}=cat(1,date_readv3_all{:});
     subID_readv2{:,g}=cat(1,subs_readv2_all{:});
     subID_readv3{:,g}=cat(1,subs_readv3_all{:});
     subID_completed_gp{:,g}=cat(1,subID_completed_gp_all{:});
+   
     clear date_readv2_all date_readv3_all subs_readv2_all subs_readv3_all subID_completed_gp_all
 
 
 end
 
-save([Out_open,'GPdata_all.mat'],'date_completed_readv2','date_completed_readv3','subID_readv2','subID_readv3','subID_completed_gp');
+save([Out_private,'GPdata_all.mat'],'date_completed_readv2','date_completed_readv3','subID_readv2','subID_readv3','subID_completed_gp');

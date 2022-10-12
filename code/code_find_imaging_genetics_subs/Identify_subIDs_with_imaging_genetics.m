@@ -45,6 +45,7 @@ eid_with_MRI_freesurfer_DK(b)=[];
 ind_eid_with_MRI_freesurfer_DK_visit_1(b)=[];
 
 
+
 %load genetics data - participants with genetics data available
 eid_genetics_table = readtable([In_private 'chr_id_sex.csv']);
 eid_genetics = table2array(eid_genetics_table(:,1));

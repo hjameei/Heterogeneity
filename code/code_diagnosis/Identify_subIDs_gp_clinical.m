@@ -17,10 +17,11 @@ function Identify_subIDs_gp_clinical(grp_num)
 
 run('Set_data_path.m');
 
-%prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Spartan press 2\nFor Hadis press 3\nFor others press 4\n";
-x = 2;
+prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Spartan press 2\nFor Hadis press 3\nFor others press 4\n";
+x = input(prompt);
+%x = 2;
 
-
+%grp_num=2;
 % change paths for the corresponding user
 switch x
     case 1
@@ -62,13 +63,13 @@ filename=[Out_open,'icd_diseaseCode_mapped.mat'];
 load(filename);
 
 
-
 % GP data
-dataFile=[In_private,'GP_clinical/gp_clinical_03_08_21.txt'];
+dataFile=[In_private,'GP_clinical/gp_clinical_06_10_22.txt'];
 ttds = tabularTextDatastore(dataFile,...
     'DatetimeType','text','ReadVariableNames',0);
 fprintf('Read datastore\n')
 %s=readall(ttds);
+
 
 % read a block of data at a time
 ttds.ReadSize=10^9;
@@ -94,7 +95,8 @@ while hasdata(ttds)
     
     %%%%%%
     fprintf('Loop over disease group\n')
-    i=str2double(grp_num); %1:length(dx_labels)
+    %i=str2double(grp_num); %1:length(dx_labels)
+    i=grp_num;
     fprintf('%s\n',dx_labels{i});
     subv2=[];
     datev2=[];
@@ -167,7 +169,7 @@ while hasdata(ttds)
     subID_readv3{i}=subv3;
     date_completed_readv3{i}=datev3;
     subID_completed_gp = subid;
-    
+ 
     T=T+1;
     save([out,'subID_GPClinical',num2str(i),'_block',num2str(T),'.mat'],...
         'subID_readv2','date_completed_readv2','subID_readv3','date_completed_readv3','subID_completed_gp')
