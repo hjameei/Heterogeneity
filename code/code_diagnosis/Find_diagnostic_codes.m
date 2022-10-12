@@ -40,6 +40,12 @@ dx_organ=txt(2:end,2);
 dx_system=txt(2:end,3);
 
 %additional inclusion and exclusion critera for diagnoses
+[~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Exclude_code_self');
+dx_code_exc_self=raw(2:end,2:8);
+
+[~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Include_code_self');
+dx_code_inc_self=raw(2:end,2:8);
+
 [~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Exclude_code_icd9');
 dx_code_exc_icd9=raw(2:end,2:8);
 
@@ -94,12 +100,41 @@ for i=1:length(dx_labels)
         end
     end
     
+    
+        %manually include specific codes
+    Include=rmmissing(string(dx_code_inc_self(i,:)));
+    if ~isempty(Include)
+        for criteria=1:size(Include,2)
+            [code, ind, ~]=intersect(code_self_v2{i},Include(criteria));
+            if isempty(ind)
+                code_self_v2{i}=[code_self_v2{i}; Include(criteria)];
+                ind_code_orig=find(num(ind,1),Include(criteria)==1);
+                description_self{i}=[description_self{i}; txt(ind_code_orig,2)];
+            end
+        end
+    end
+    
     %index duplicated codes
     [~, dup]=unique(code_self_v2{i});
     
     %remove duplicated codes
     code_self_v2{i}=code_self_v2{i}(dup);
     description_self{i}=description_self{i}(dup);
+    
+    %manually exclude specific codes
+    Exclude=rmmissing(string(dx_code_exc_self(i,:)));
+    if ~isempty(Exclude)
+        for criteria=1:size(Exclude,2)
+            [~, ind, ~]=intersect(code_self_v2{i},Exclude(criteria)); %find code to exclude
+            
+            if ~isempty(ind)
+                code_self_v2{i}(ind)=[];
+                description_self{i}(ind)=[];
+            end
+            
+        end
+    end
+    
 end
 
 
