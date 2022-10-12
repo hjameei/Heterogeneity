@@ -241,7 +241,7 @@ for i=1:length(dGrp)
     idc = find(contains(dx_labels, caseInsensitivePattern(dGrp(i))));
     idx = (idc(1));
     code_self_trimmed=strtrim(string(code_self{i}));
-    code_Self_v2_trimmed = strtrim(string(code_self_v2{i}));
+    code_Self_v2_trimmed = strtrim(string(code_self_v2{idx}));
 
     if contains(dGrp(i), caseInsensitivePattern('Cancer'))
         num_self_v2 = strtrim(string(num_self_cancer));
@@ -275,7 +275,7 @@ for i=1:length(dGrp)
     description_new_tmp = [txt_self_v2(a2,2); txt_self_v2(x2_v2,2)];
     code_new_tmp = [num_self_v2(a2,1); num_self_v2(x2_v2,1)];
     cross_check_tmp = [cross_check_overlaps; cross_check_missing];
-    description_old_tmp = [txt_self_v2(x2,5);];
+    description_old_tmp = [txt_self_v2(x2,2);];
     code_old_tmp = num_self_v2(x2,1);
 
     add_empties = length(description_new_tmp)-length(description_old_tmp);
@@ -299,7 +299,7 @@ for i=1:length(dGrp)
     cross_check_self = [cross_check_self; cross_check_tmp];
     description_old_self = [description_old_self; description_old_tmp];
     code_old_self = [code_old_self; code_old_tmp];
-
+    return
 end
 
 

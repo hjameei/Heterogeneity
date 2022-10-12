@@ -47,7 +47,7 @@ dx_code_exc_icd9=raw(2:end,2:8);
 dx_code_inc_icd9=raw(2:end,2:15);
 
 [~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Exclude_code_icd10');
-dx_code_exc_icd10=raw(2:end,2:84);
+dx_code_exc_icd10=raw(2:end,2:47);
 
 [~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Include_code_icd10');
 dx_code_inc_icd10=raw(2:end,2:45);
