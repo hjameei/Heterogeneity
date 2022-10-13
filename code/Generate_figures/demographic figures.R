@@ -24,12 +24,11 @@ library(ggplot2)
 library(gridExtra)
 library(stringr)
 
-source('./strwrap function.R')
 cross_dsads <- readMat(data_path)
 
 dx_labels = do.call(rbind.data.frame, cross_dsads$labels)
-dx_organs = do.call(rbind.data.frame, cross_dsads$organs)
-dx_systems = do.call(rbind.data.frame, cross_dsads$systems)
+dx_organs = do.call(rbind.data.frame, cross_dsads$organs )
+dx_systems = do.call(rbind.data.frame, cross_dsads$system )
 
 for(i in seq(1, nrow(dx_organs))){
   if (grepl("blood", dx_organs[i,1], fixed = TRUE)){
