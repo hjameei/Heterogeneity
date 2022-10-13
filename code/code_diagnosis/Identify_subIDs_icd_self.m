@@ -55,7 +55,7 @@ ttds = datastore(dataFile,...
     'DatetimeType','text','ReadVariableNames',0);
 fprintf('Read datastore\n');
 
-
+return
 % s=readall(ttds); %use s=read(ttds) if just testing;
  s=read(ttds);
 
