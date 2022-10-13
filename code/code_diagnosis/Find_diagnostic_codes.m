@@ -53,7 +53,7 @@ dx_code_exc_icd9=raw(2:end,2:8);
 dx_code_inc_icd9=raw(2:end,2:15);
 
 [~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Exclude_code_icd10');
-dx_code_exc_icd10=raw(2:end,2:84);
+dx_code_exc_icd10=raw(2:end,2:47);
 
 [~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Include_code_icd10');
 dx_code_inc_icd10=raw(2:end,2:45);
@@ -88,8 +88,11 @@ description_self{ind_cancer}=txt_self(:,2);
 %noncancer codes
 %downloaded from https://biobank.ndph.ox.ac.uk/showcase/coding.cgi?id=3
 [num,txt,raw]=xlsread([In_open,'self_report/self_report_medical_noncancer_codes.xlsx']);
+txt=txt(2:end, :);
+num = strtrim(string(num));
 
 for i=1:length(dx_labels)
+
     for key=1:size(dx_key_words,2)
         dx=dx_key_words{i,key};
         if ~isempty(dx)
@@ -99,21 +102,20 @@ for i=1:length(dx_labels)
             description_self{i}=[description_self{i}; txt(ind,2)];
         end
     end
-    
-    
-        %manually include specific codes
+
+    %manually include specific codes
     Include=rmmissing(string(dx_code_inc_self(i,:)));
     if ~isempty(Include)
         for criteria=1:size(Include,2)
             [code, ind, ~]=intersect(code_self_v2{i},Include(criteria));
             if isempty(ind)
                 code_self_v2{i}=[code_self_v2{i}; Include(criteria)];
-                ind_code_orig=find(num(ind,1),Include(criteria)==1);
+                ind_code_orig=find(strcmp(num(:,1),Include(criteria))==1);
                 description_self{i}=[description_self{i}; txt(ind_code_orig,2)];
             end
         end
     end
-    
+
     %index duplicated codes
     [~, dup]=unique(code_self_v2{i});
     
@@ -126,7 +128,6 @@ for i=1:length(dx_labels)
     if ~isempty(Exclude)
         for criteria=1:size(Exclude,2)
             [~, ind, ~]=intersect(code_self_v2{i},Exclude(criteria)); %find code to exclude
-            
             if ~isempty(ind)
                 code_self_v2{i}(ind)=[];
                 description_self{i}(ind)=[];
@@ -241,8 +242,6 @@ for i=1:length(dx_labels)
         end
     end
     
-
-    
     %adding alternative codes, which are available in ICD10
     code_alternative = [];
     desc_alternative = [];
@@ -253,7 +252,6 @@ for i=1:length(dx_labels)
     end
     code_icd10{i} = [code_icd10{i}; code_alternative];
     description_icd10{i}= [description_icd10{i}; desc_alternative];
-    
     
     %index duplicated codes
     [~, dup]=unique(code_icd10{i});

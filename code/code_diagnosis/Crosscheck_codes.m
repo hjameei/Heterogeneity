@@ -229,6 +229,8 @@ labels_new_icd10 = [labels_new_icd10; label_others];
 
 [num_self_noncancer,txt_self_noncancer,~]=xlsread([In_open,'self_report/self_report_medical_noncancer_codes.xlsx']);
 [num_self_cancer,txt_self_cancer,~]=xlsread([In_open,'self_report/self_report_medical_cancer_codes.xlsx']);
+txt_self_noncancer=txt_self_noncancer(2:end,:);
+txt_self_cancer=txt_self_cancer(2:end,:);
 
 labels_new_self = cell(0);
 description_new_self=cell(0);
@@ -239,9 +241,13 @@ code_old_self = cell(0);
 
 for i=1:length(dGrp)
     idc = find(contains(dx_labels, caseInsensitivePattern(dGrp(i))));
+    if strcmp(dGrp(i), 'Depression')==1
+        idc = find(strcmp(dx_labels, dGrp(i))==1);
+    end
+    
     idx = (idc(1));
     code_self_trimmed=strtrim(string(code_self{i}));
-    code_Self_v2_trimmed = strtrim(string(code_self_v2{i}));
+    code_Self_v2_trimmed = strtrim(string(code_self_v2{idx}));
 
     if contains(dGrp(i), caseInsensitivePattern('Cancer'))
         num_self_v2 = strtrim(string(num_self_cancer));
@@ -251,7 +257,6 @@ for i=1:length(dGrp)
         txt_self_v2 = txt_self_noncancer;
     end
 
-    
     % find codes and descriptions that are present in both versions 1 and 2
     [overlapping_code ind_code_self_new ind_code_self]=intersect(code_self_trimmed,code_Self_v2_trimmed);
     [a1, a2, ~] = intersect(num_self_v2(:,1), overlapping_code);
@@ -275,7 +280,7 @@ for i=1:length(dGrp)
     description_new_tmp = [txt_self_v2(a2,2); txt_self_v2(x2_v2,2)];
     code_new_tmp = [num_self_v2(a2,1); num_self_v2(x2_v2,1)];
     cross_check_tmp = [cross_check_overlaps; cross_check_missing];
-    description_old_tmp = [txt_self_v2(x2,5);];
+    description_old_tmp = [txt_self_v2(x2,2);];
     code_old_tmp = num_self_v2(x2,1);
 
     add_empties = length(description_new_tmp)-length(description_old_tmp);
@@ -299,7 +304,6 @@ for i=1:length(dGrp)
     cross_check_self = [cross_check_self; cross_check_tmp];
     description_old_self = [description_old_self; description_old_tmp];
     code_old_self = [code_old_self; code_old_tmp];
-
 end
 
 
