@@ -169,7 +169,7 @@ subID_mhq = subID_dx_mhq';
 date_diag_icd9 = date_completed_icd9;
 date_diag_icd10 = date_completed_icd10;
 date_diag_mhq = date_completed_mhq;
-age_diag_self = age_completed_self;
+
 date_birth=datetime(birth_year,birth_month,birth_day,'Format',formatOut);
 
 for i=1:size(date_diag_icd9,2)
