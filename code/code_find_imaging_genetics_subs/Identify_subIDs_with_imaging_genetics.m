@@ -63,6 +63,8 @@ load([In_private 'demographics.mat']);
 filename = [Out_private, 'DiseaseGroupSubID.mat'];
 load(filename);
 labels = ([{'Healthy'}; dx_labels]);
+organs = ([{'Healthy'}; dx_organ]);
+systems = ([{'Healthy'}; dx_system]);
 Number_data = zeros(size(dx_labels,1)+1,3);
 
 Number_data(1,1) = size(intersect(subID_healthy, eid_with_MRI_freesurfer_DK),1);
@@ -183,6 +185,6 @@ ratio_ethnicity_nonwhite = [ratio_ethnicity_nonwhite_with_MRI_freesurfer_DK rati
 
 demographic_matrix = [ Num; age_mean; age_sd; sex_ratio_male; n_ethnicity_white; ratio_ethnicity_white; n_ethnicity_nonwhite; ratio_ethnicity_nonwhite];
 
-save([Out_private 'plot_data.mat'], 'Number_data', 'labels', ...
+save([Out_private 'plot_data.mat'], 'Number_data', 'labels', 'organs', 'systems', ...
     'subID_genetics', 'subID_imaging', 'subID_imaging_genetics', ...
     'demographic_matrix');

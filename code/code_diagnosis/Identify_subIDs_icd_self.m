@@ -55,9 +55,15 @@ ttds = datastore(dataFile,...
     'DatetimeType','text','ReadVariableNames',0);
 fprintf('Read datastore\n');
 
+<<<<<<< HEAD
 return
 % s=readall(ttds); %use s=read(ttds) if just testing;
  s=read(ttds);
+=======
+
+s=readall(ttds); %use s=read(ttds) if just testing;
+% s=read(ttds);
+>>>>>>> main
 
 % % subjects with self-report diagnoses - non-cancer
 ind=find(contains(s{1,:},'20002-0.')==1);
@@ -339,7 +345,7 @@ ind_healthy_icd=intersect(ind_healthy_icd9,ind_healthy_icd10);
 subID_healthy_icd=subID(ind_healthy_icd);
 
 
-filename = [Out_private, 'subID_icd_self_test.mat'];
+filename = [Out_private, 'subID_icd_self.mat'];
  save(filename,'dx_labels','dx_organ','dx_system',...
     'subID_healthy_icd9','subID_healthy_icd10','subID_healthy_self',...
     'subID_dx_icd9','subID_dx_icd10','subID_dx_self',...
