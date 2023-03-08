@@ -20,7 +20,7 @@ This code goes through the diseases of interest provided in a file named "Diseas
     The main sheet is the list of diseases of interest, detailed by their exact labels, the organ they are related to, they body system they involve, and the keywords to find the diseases by in the code/description of diagnostic codes.
     Each disease of interest has its own include and exclude criteria to match the exact description of the diagnostic codes, which are detailed in the remaining 8 sheets of the excel file.
  - **all_lkps_maps_v3.xlsx**: detailing the code and description of the IC9/10, read_v2/v3, as well as lookup tables for pair-wise mappings between these codes. This table is available to download on [page 17 of UKB instructions](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip).
-
+ - **mhq_code.xlsx**: available [here](https://biobank.ndph.ox.ac.uk/showcase/coding.cgi?id=1401).
  - **self_report_medical_cancer_codes.xlsx**: self-reported cancer codes, available [here](https://biobank.ndph.ox.ac.uk/showcase/coding.cgi?id=3).
  - **self_report_medical_noncancer_codes.xlsx**: self-reported non-cancer codes, available [here](https://biobank.ndph.ox.ac.uk/showcase/coding.cgi?id=3).
 
@@ -35,8 +35,23 @@ This code goes through the diseases of interest provided in a file named "Diseas
     - dx_labels
     - dx_organ
     - dx_system
+- **vars_to_crosscheck.mat**:all variables in the code, only needed for Step 2.
 
-## Steps 2: code_diagnosis/Map_icd_read2_read3.m
+## Steps 2: code_diagnosis/Crosscheck_codes.m
+
+This code finds the similarities and discrepancies between the older version program and the newer version. The aim is to update the diseases of interest file, and this step doesn't need to be repeated, and is just documented.
+
+### Input: 
+- **vars_to_crosscheck.mat**
+- **self_report_medical_cancer_codes.xlsx**
+- **self_report_medical_noncancer_codes.xlsx**
+
+
+### Output: 
+- **description_codes_v1_v2.xlsx**: contains missing and overlaps between ICD9, ICD10, and self codes for the previous version of this program.
+
+
+## Steps 3: code_diagnosis/Map_icd_read2_read3.m
 
 This file will find a mapping between codes from ICD9/10, and read_v2 and read_v3, and stores read_v2 and read_v3 codes of the diseases of interest.
 
@@ -59,14 +74,14 @@ This file will find a mapping between codes from ICD9/10, and read_v2 and read_v
     - dx_organ
     - dx_organ
     
-## Steps 3: code_diagnosis/Identify_subIDs_icd_self.m
+## Steps 4: code_diagnosis/Identify_subIDs_icd_self.m
 
 This code will identify subject IDs with any one of the diagnoses, mapped by ICD9/ICD10 and self-reports. 
 
 ### Input:
 
 - **Diseases_of_interest.xlsx**
-- **icd_diseaseCode_mapped.mat**, generated in Step 2.
+- **icd_diseaseCode_mapped.mat**, generated in Step 3.
 - **medical_data.csv**: containing datafields as specified in 'medical condition' ([spreadsheet](https://biobank.ndph.ox.ac.uk/showcase/codown.cgi)).
 - **data_fields_53_52_34_dates.csv**: contains dates at baseline, first, and second MRI visists.
 
@@ -89,7 +104,7 @@ This code will identify subject IDs with any one of the diagnoses, mapped by ICD
     - dx_organ
     - dx_organ
 
-## Steps 4: code_diagnosis/Identify_subIDs_mhq.m
+## Steps 5: code_diagnosis/Identify_subIDs_mhq.m
 
 Similar to Step 3, this code will identify subject IDs with any one of the diagnoses, but mapped by MHQ.
 read in Mental Health Questionnaire and extract diagnoses for each subject
@@ -112,14 +127,14 @@ read in Mental Health Questionnaire and extract diagnoses for each subject
     - dx_organ
 
 
-## Steps 5: code_diagnosis/Identify_subIDs_gp_clinical.m
+## Steps 6: code_diagnosis/Identify_subIDs_gp_clinical.m
 
 This code will identify subject IDs with any one of the diagnoses, according to GP clinical. 
 
 ### Input:
 
 - **data_fields_53_52_34_dates.csv**
-- **icd_diseaseCode_mapped.mat**, generated in Step 2.
+- **icd_diseaseCode_mapped.mat**, generated in Step 3.
 - **gp_clinical_06_10_22.txt**: which is primary care data. These fields are updated regularly and can be redownloaded if we have an updated .enc file. Instructions to download primary care data are shown in [primary_care_data.pdf](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip).
 
 ### Output:
@@ -131,7 +146,7 @@ This code will identify subject IDs with any one of the diagnoses, according to 
     - date_completed_readv3
 
 
-## Steps 6: code_diagnosis/Combine_blocks_gp_clinical.m
+## Steps 7: code_diagnosis/Combine_blocks_gp_clinical.m
 
 This code will combine .mat files (containing clinical GP data) from Step 5 (Identify_subIDs_gp_clinical.m).
 
@@ -149,15 +164,15 @@ This code will combine .mat files (containing clinical GP data) from Step 5 (Ide
     - date_completed_readv2
     - date_completed_readv3
 
-## Steps 7: code_diagnosis/Identify_subIDs_from_all_sources.m
+## Steps 8: code_diagnosis/Identify_subIDs_from_all_sources.m
 
 This code will combine subject IDs and dates from clinical GP data with other data (from self report, icd9, icd10 and MHQ).
 
 ### Input:
 
-- **GPdata_all.mat**, generated in Step 6.
-- **subID_icd_self.mat** generated in Step 3.
-- **subID_mhq.mat** generated in Step 4.
+- **GPdata_all.mat**, generated in Step 7.
+- **subID_icd_self.mat** generated in Step 4.
+- **subID_mhq.mat** generated in Step 5.
 - **data_fields_53_52_34_dates.csv**
 
 ### Output:
