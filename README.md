@@ -21,8 +21,8 @@ This code goes through the diseases of interest provided in a file named "Diseas
     Each disease of interest has its own include and exclude criteria to match the exact description of the diagnostic codes, which are detailed in the remaining 8 sheets of the excel file.
  - **all_lkps_maps_v3.xlsx**: detailing the code and description of the IC9/10, read_v2/v3, as well as lookup tables for pair-wise mappings between these codes. This table is available to download on [page 17 of UKB instructions](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip).
 
- - **self_report_medical_cancer_codes.xlsx**: 
- - **self_report_medical_noncancer_codes.xlsx**: 
+ - **self_report_medical_cancer_codes.xlsx**: self-reported cancer codes, available [here](https://biobank.ndph.ox.ac.uk/showcase/coding.cgi?id=3).
+ - **self_report_medical_noncancer_codes.xlsx**: self-reported non-cancer codes, available [here](https://biobank.ndph.ox.ac.uk/showcase/coding.cgi?id=3).
 
 ### Output: 
 
