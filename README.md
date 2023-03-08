@@ -21,12 +21,14 @@ The main sheet is the list of diseases of interest, detailed by their exact labe
 
 Each disease of interest has its own include and exclude criteria to match the exact description of the diagnostic codes, which are detailed in the remaining 8 sheets of the excel file.
 
-## Output: disease_codes.mat
+### Output: disease_codes.mat
 
 This file contains codes and description of the diseases of interest, as searched through diagnostic codes. The exact feilds are:
 - code_icd9/description_icd9 
 - code_icd10/description_icd10
 - code_mhq/description_mhq
 - code_self_v2/description_self
+
+
 
 
