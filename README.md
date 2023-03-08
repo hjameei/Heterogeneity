@@ -18,18 +18,18 @@ This code goes through the diseases of interest provided in a file named "Diseas
  ### Input:
  - **Diseases_of_interest.xlsx"**: The main sheet is the list of diseases of interest, detailed by their exact labels, the organ they are related to, they body system they involve, and the keywords to find the diseases by in the code/description of diagnostic codes.
 
-Each disease of interest has its own include and exclude criteria to match the exact description of the diagnostic codes, which are detailed in the remaining 8 sheets of the excel file.
+ Each disease of interest has its own include and exclude criteria to match the exact description of the diagnostic codes, which are detailed in the remaining 8 sheets of the excel file.
 
 ### Output: 
 
 - **disease_codes.mat**: This file contains label, organ, system, codes, and description of the diseases of interest, as searched through diagnostic codes. The exact feilds are:
-- code_icd9/description_icd9 
-- code_icd10/description_icd10
-- code_mhq/description_mhq
-- code_self_v2/description_self
-- dx_labels
-- dx_organ
-- dx_system
+ - code_icd9/description_icd9 
+ - code_icd10/description_icd10
+ - code_mhq/description_mhq
+ - code_self_v2/description_self
+ - dx_labels
+ - dx_organ
+ - dx_system
 
 ## Steps 2: code_diagnosis/Map_icd_read2_read3.m
 
