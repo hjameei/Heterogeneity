@@ -9,7 +9,7 @@ The diagnosis information of individuals are reported in formats of four differe
 - ICD codes relating inpatients (ICD9/ICD10)
 - Self reported Mental Health Questionnaire (MHQ)
 
-The  (available under name gp_clinical, informations about how to obtain this table can be found in [UBK Primary care Documentation](https://biobank.ndph.ox.ac.uk/showcase/showcase/docs/primary_care_data.pdf) ) 
+The  (available under name gp_clinical, informations about how to obtain this table can be found in [UBK Primary care Documentation](https://biobank.ndph.ox.ac.uk/showcase/showcase/docs/primary_care_data.pdf)).
 
 ## Steps 1: code_diagnosis/Find_daignostic_codes.m
 
@@ -38,7 +38,7 @@ This file will find a mapping between codes from ICD9/10, and self-reports.
 
 ### Input: disease_codes.mat, all_lkps_maps_v3.xlsx
 
-disease_codes.mat is generated during the previsous step. the all_lkps_maps_v3.xlsx is a lookup table for . This table is available to download ([page 17 of UKB instructions](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip) )
+disease_codes.mat is generated during the previsous step. the all_lkps_maps_v3.xlsx is a lookup table for . This table is available to download ([page 17 of UKB instructions](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip)).
 
 
 
