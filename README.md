@@ -123,7 +123,7 @@ This code will identify subject IDs with any one of the diagnoses, according to 
 - **gp_clinical_06_10_22.txt**: which is primary care data. These fields are updated regularly and can be redownloaded if we have an updated .enc file. Instructions to download primary care data are shown in [primary_care_data.pdf](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip).
 
 ### Output:
-    Blocks of data with prefix **subID_GPClinical**, containing the following ifnormation:
+- Blocks of data with prefix **subID_GPClinical**, containing the following ifnormation:
     - subID_readv2
     - subID_readv3
     - subID_completed_gp
