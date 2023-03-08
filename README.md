@@ -129,3 +129,55 @@ This code will identify subject IDs with any one of the diagnoses, according to 
     - subID_completed_gp
     - date_completed_readv2
     - date_completed_readv3
+
+
+## Steps 6: code_diagnosis/Combine_blocks_gp_clinical.m
+
+This code will combine .mat files (containing clinical GP data) from Step 5 (Identify_subIDs_gp_clinical.m).
+
+### Input:
+
+- **subID_GPClinical**, blocks
+
+### Output:
+
+- **GPdata_all.mat**
+    The generated file contains the following fields:
+    - subID_readv2
+    - subID_readv3
+    - subID_completed_gp
+    - date_completed_readv2
+    - date_completed_readv3
+
+## Steps 7: code_diagnosis/Identify_subIDs_from_all_sources.m
+
+This code will combine subject IDs and dates from clinical GP data with other data (from self report, icd9, icd10 and MHQ).
+
+### Input:
+
+- **GPdata_all.mat**, generated in Step 6.
+- **subID_icd_self.mat** generated in Step 3.
+- **subID_mhq.mat** generated in Step 4.
+- **data_fields_53_52_34_dates.csv**
+
+### Output:
+
+- **DiseaseGroupSubID.mat**
+    The generated file contains the following fields:
+    - subID_self
+    - subID_icd
+    - subID_icd9
+    - subID_icd10
+    - subID_mhq
+    - subID_all
+    - age_diag_self
+    - age_diag_icd9
+    - age_diag_icd10
+    - age_diag_mhq
+    - age_diag_all
+    - date_diag_icd9
+    - date_diag_icd10
+    - subID_healthy
+    - dx_labels
+    - dx_organ
+    - dx_system
