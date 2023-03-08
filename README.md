@@ -34,13 +34,13 @@ This code goes through the diseases of interest provided in a file named "Diseas
 
 ## Steps 2: code_diagnosis/Map_icd_read2_read3.m
 
-This file will find a mapping between codes from ICD9/10, and read_v2 and read_v3.
+This file will find a mapping between codes from ICD9/10, and read_v2 and read_v3, and stores read_v2 and read_v3 codes of the diseases of interest.
 
 ### Input:
 
 - **disease_codes.mat**, generated during the previsous step.
 
-- **all_lkps_maps_v3.xlsx**: a lookup table for . This table is available to download ([page 17 of UKB instructions](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip)).
+- **all_lkps_maps_v3.xlsx**: a lookup table detailing pair-wise mappings between read_v2, read_v3, ICD9, ICD10, and other codes. This table is available to download ([page 17 of UKB instructions](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip)).
 
 ### Output:
 
