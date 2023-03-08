@@ -23,13 +23,13 @@ This code goes through the diseases of interest provided in a file named "Diseas
 ### Output: 
 
 - **disease_codes.mat**: This file contains label, organ, system, codes, and description of the diseases of interest, as searched through diagnostic codes. The exact feilds are:
- + code_icd9/description_icd9 
- + code_icd10/description_icd10
- + code_mhq/description_mhq
- + code_self_v2/description_self
- + dx_labels
- + dx_organ
- + dx_system
+    + code_icd9/description_icd9 
+    + code_icd10/description_icd10
+    + code_mhq/description_mhq
+    + code_self_v2/description_self
+    + dx_labels
+    + dx_organ
+    + dx_system
 
 ## Steps 2: code_diagnosis/Map_icd_read2_read3.m
 
