@@ -24,17 +24,17 @@ This code goes through the diseases of interest provided in a file named "Diseas
 
 - **disease_codes.mat**
     This file contains label, organ, system, codes, and description of the diseases of interest, as searched through diagnostic codes. The exact feilds are:
-    + code_icd9/description_icd9 
-    + code_icd10/description_icd10
-    + code_mhq/description_mhq
-    + code_self_v2/description_self
-    + dx_labels
-    + dx_organ
-    + dx_system
+    - code_icd9/description_icd9 
+    - code_icd10/description_icd10
+    - code_mhq/description_mhq
+    - code_self_v2/description_self
+    - dx_labels
+    - dx_organ
+    - dx_system
 
 ## Steps 2: code_diagnosis/Map_icd_read2_read3.m
 
-This file will find a mapping between codes from ICD9/10, and self-reports.
+This file will find a mapping between codes from ICD9/10, and read_v2 and read_v3.
 
 ### Input:
 
@@ -42,6 +42,19 @@ This file will find a mapping between codes from ICD9/10, and self-reports.
 
 - **all_lkps_maps_v3.xlsx**: a lookup table for . This table is available to download ([page 17 of UKB instructions](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip)).
 
+### Output:
+
+- **icd_diseaseCode_mapped.mat**
+    The generated file contains the following fields:
+    - code_self_v2
+    - code_icd9
+    - code_icd10
+    - readv2
+    - readv3
+    - dx_labels
+    - dx_organ
+    - dx_organ
+    
 
 
 
