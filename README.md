@@ -39,7 +39,7 @@ This code goes through the diseases of interest provided in a file named "Diseas
 
 ## Steps 2: code_diagnosis/Crosscheck_codes.m
 
-This code finds the similarities and discrepancies between the older version program and the newer version. The aim is to update the diseases of interest file, and this step doesn't need to be repeated, and is just documented.
+This code finds the similarities and discrepancies between the older version of the program and the this new version. The aim is to update the diseases of interest file, and this step doesn't need to be repeated, and is just documented.
 
 ### Input: 
 - **vars_to_crosscheck.mat**
@@ -197,3 +197,42 @@ This code will combine subject IDs and dates from clinical GP data with other da
     - dx_labels
     - dx_organ
     - dx_system
+
+## Steps 9: code_find_imaging_genetics_subs/Identify_subIDs_from_all_sources.m
+
+This code will identify the subjects IDs with imaging data, genetics data, and both imaging and genetics data..
+
+### Input:
+- **DiseaseGroupSubID.mat**: generated in Step 8.
+- **data_fields_53_52_34_dates.csv**
+- **w60698_20210809_subjects_to_remove_consent.mat**: subjects that withdrew their consent.
+- **chr_id_sex.csv**: participants with genetic data avialable.
+- **variable_selection.xlsx**
+- **mb1958_MRI_freesurfer_DK.csv**
+- **demographics.mat**
+
+### Output:
+
+- **plot_data.mat**
+    The generated file contains the following fields:
+    - subID_genetics
+    - subID_imaging
+    - subID_imaging_genetics
+    - Number_data
+    - demographic_matrix
+    - labels
+    - organs
+    - systems
+
+## Steps 10: Generate_figures/demographic figures.R
+
+This code will generate demographic figures for data.
+
+### Input:
+- **plot_data.mat**: generated in Step 9.
+
+### Output:
+
+- **Count_imaging_genetics.pdf**: frequency of each diagnostic label for each imaging, genetics, and imaging_genetics data plotted by gender.
+- **data_requency.txt**: frequency of each diagnostic label for each imaging, genetics, and imaging_genetics data.
+- **data_demographic_txt.txt**: the data demographics (N, age, sex, ethnicity) average/SD for each imaging, genetics, and imaging_genetics data.
