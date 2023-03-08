@@ -36,9 +36,11 @@ This file contains label, organ, system, codes, and description of the diseases 
 
 This file will find a mapping between codes from ICD9/10, and self-reports.
 
-### Input: disease_codes.mat, all_lkps_maps_v3.xlsx
+### Input:
 
-disease_codes.mat is generated during the previsous step. the all_lkps_maps_v3.xlsx is a lookup table for . This table is available to download ([page 17 of UKB instructions](https://biobank.ndph.ox.ac.uk/showcase/showcase/auxdata/primarycare_codings.zip)).
+- **disease_codes.mat, all_lkps_maps_v3.xlsx**
+
+disease_codes.mat is generated during the previsous step.
 
 
 
