@@ -16,13 +16,14 @@ The  (available under name gp_clinical, informations about how to obtain this ta
 This code goes through the diseases of interest provided in a file named "Diseases_of_interest.xlsx", and finds all the diagnostic codes and descriptions of theses diseases, including ICD9/10, read v2, MHQ codes. 
 
  ### Input:
- - **Diseases_of_interest.xlsx"**: The main sheet is the list of diseases of interest, detailed by their exact labels, the organ they are related to, they body system they involve, and the keywords to find the diseases by in the code/description of diagnostic codes.
-
+ - **Diseases_of_interest.xlsx**
+    The main sheet is the list of diseases of interest, detailed by their exact labels, the organ they are related to, they body system they involve, and the keywords to find the diseases by in the code/description of diagnostic codes.
     Each disease of interest has its own include and exclude criteria to match the exact description of the diagnostic codes, which are detailed in the remaining 8 sheets of the excel file.
 
 ### Output: 
 
-- **disease_codes.mat**: This file contains label, organ, system, codes, and description of the diseases of interest, as searched through diagnostic codes. The exact feilds are:
+- **disease_codes.mat**
+    This file contains label, organ, system, codes, and description of the diseases of interest, as searched through diagnostic codes. The exact feilds are:
     + code_icd9/description_icd9 
     + code_icd10/description_icd10
     + code_mhq/description_mhq
