@@ -11,7 +11,7 @@ The diagnosis information of individuals are reported in formats of four differe
 
 The  (available under name gp_clinical, informations about how to obtain this table can be found in [UBK Primary care Documentation] (https://biobank.ndph.ox.ac.uk/showcase/showcase/docs/primary_care_data.pdf) ) 
 
-# Steps 1: code_diagnosis/Find_daignostic_codes.m
+## Steps 1: code_diagnosis/Find_daignostic_codes.m
 
 This code goes through the diseases of interest provided in a file named "Diseases_of_interest.xlsx", and finds all the diagnostic codes and descriptions of theses diseases, including ICD9/10, read v2, MHQ codes. 
 
