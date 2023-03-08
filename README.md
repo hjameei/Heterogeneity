@@ -9,7 +9,7 @@ The diagnosis information of individuals are reported in formats of four differe
 - ICD codes relating inpatients (ICD9/ICD10)
 - Self reported Mental Health Questionnaire (MHQ)
 
-The  (available under name gp_clinical, informations about how to obtain this table can be found in [UBK Primary care Documentation] (https://biobank.ndph.ox.ac.uk/showcase/showcase/docs/primary_care_data.pdf) ) 
+The  (available under name gp_clinical, informations about how to obtain this table can be found in [UBK Primary care Documentation](https://biobank.ndph.ox.ac.uk/showcase/showcase/docs/primary_care_data.pdf) ) 
 
 ## Steps 1: code_diagnosis/Find_daignostic_codes.m
 
