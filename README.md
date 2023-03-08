@@ -50,6 +50,7 @@ This code finds the similarities and discrepancies between the older version pro
 ### Output: 
 - **description_codes_v1_v2.xlsx**: contains missing and overlaps between ICD9, ICD10, and self codes for the previous version of this program.
 
+After this step, we updated the diseases of interest file inclusion and exludion criteria based on missing values in both fields if they were matched with the description.
 
 ## Steps 3: code_diagnosis/Map_icd_read2_read3.m
 
