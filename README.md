@@ -15,7 +15,7 @@ The  (available under name gp_clinical, informations about how to obtain this ta
 
 This code goes through the diseases of interest provided in a file named "Diseases_of_interest.xlsx", and finds all the diagnostic codes and descriptions of theses diseases, including ICD9/10, read v2, MHQ codes. 
 
- ** Input: ** "Diseases_of_interest.xlsx" Excel sheet
+ **Input:** "Diseases_of_interest.xlsx" Excel sheet
 
 The main sheet is the list of diseases of interest, detailed by their exact labels, the organ they are related to, they body system they involve, and the keywords to find the diseases by in the code/description of diagnostic codes.
 
