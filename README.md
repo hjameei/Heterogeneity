@@ -208,7 +208,7 @@ This code will combine subject IDs and dates from clinical GP data with other da
     - dx_organ
     - dx_system
 
-## Steps 9: code_find_imaging_genetics_subs/Identify_subIDs_from_all_sources.m
+## Steps 9: code_find_imaging_genetics_subs/Identify_subIDs_with_imaging_genetics.m
 
 This code will identify the subjects IDs with imaging data, genetics data, and both imaging and genetics data..
 
