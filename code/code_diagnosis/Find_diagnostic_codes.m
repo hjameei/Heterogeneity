@@ -1,7 +1,11 @@
 %Find codes for each diagnosis
 
+%STEP 1%
+
 clear all
 close all
+
+asrb=0;
 
 run('Set_data_path.m');
 

@@ -1,7 +1,10 @@
 
 %read in Mental Health Questionnaire and extract diagnoses for each subject
+% STEP 5%
 clear all
 close all
+
+asrb=0;
 
 run('Set_data_path.m');
 

@@ -1,3 +1,4 @@
+%STEP 4%
 
 % RUN IN PARALLEL (on spartan)
 
@@ -19,6 +20,7 @@
 clear all
 close all
 
+asrb=0;
 run('Set_data_path.m');
 
 prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Ye press 2\nFor Hadis press 3\nFor others press 4\n";

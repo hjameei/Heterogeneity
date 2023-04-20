@@ -1,11 +1,14 @@
 function Identify_subIDs_gp_clinical(grp_num)
 
+%STEP 4 - can be run in parrallel to 'Identify_SUBIDs_icd_self.m'
 %This code will find subject IDs with diagnosis according to GP clinical
 %data
 %Run this one spartan with case=1...length of disease labels
 
 %inputs:
-%icd_diseaseCode_mapped.mat
+%icd_diseaseCode_mapped.mat (output from Map_icd_read2_read3.m)
+    %to copy this file, open terminal and cd to: /Users/mq669/Dropbox (Partners HealthCare)/DOCUMENTS/POSTDOC_MNC/NHMRC Investigator grant/DATA MANAGEMENT/HETEROGENEITY2/Heterogeneity/outputs/Diagnosis
+    % then: scp icd_diseaseCode_mapped.mat dibiasem@spartan.hpc.unimelb.edu.au:/home/dibiasem/punim0042/UKBIOBANK/diagnosis_outNew/
 %gp_clinical_03_08_21.txt (which is primary care data). These fields are updated regularly
 %and can be redownloaded if we have an updated .enc file. Instructions to
 %download primary care data are shown in 'primary_care_data.pdf'
@@ -39,8 +42,6 @@ switch x
         In_private = In_private_Hadis;
         In_open = In_open_Hadis;
         path_old_dx = path_old_dx_Hadis;
-        Out_open = Out_open_Hadis;
-        Out_private = Out_private_Hadis;
     otherwise
         In_private = In_private_Other;
         In_open = In_open_Other;
@@ -96,7 +97,7 @@ while hasdata(ttds)
     date_MRI=date_MRI_all(ind);
     
     %%%%%%
-    fprintf('Loop over disease group\n');
+    fprintf('Loop over disease group\n')
     %i=str2double(grp_num); %1:length(dx_labels)
     i=grp_num;
     fprintf('%s\n',dx_labels{i});
@@ -134,7 +135,7 @@ while hasdata(ttds)
                 %subid
                 subv2=[subv2;str2double(subid{j})];
             else
-                fprintf ('Read V2: Remove subject %d,ID:%s\n',j,subid{j});
+                fprintf ('Read V2: Remove subject %d,ID:%s\n',j,subid{j})
             end
         end
         
@@ -174,8 +175,8 @@ while hasdata(ttds)
  
     T=T+1;
     save([out,'subID_GPClinical',num2str(i),'_block',num2str(T),'.mat'],...
-        'subID_readv2','date_completed_readv2','subID_readv3','date_completed_readv3','subID_completed_gp');
-    fprintf('Complete data block %d, block size=%d\n\n',T,ttds.ReadSize);
+        'subID_readv2','date_completed_readv2','subID_readv3','date_completed_readv3','subID_completed_gp')
+    fprintf('Complete data block %d, block size=%d\n\n',T,ttds.ReadSize)
     
 
     

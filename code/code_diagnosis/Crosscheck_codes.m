@@ -1,6 +1,7 @@
 clear all
 close all
 
+asrb=0;
 
 % similarities discrepancies for older (Ye's codes) ICD9 and new ICD9
 run('Set_data_path.m');
@@ -340,7 +341,7 @@ labels_new_self = [labels_new_self; label_others];
 
 % saving results
 
-filename = [Out_open 'description_codes_v1_v2.xlsx'];
+filename = [Out_open 'description_codes_v1_v2_v3.xlsx'];
 if exist(filename, 'file')==2
   delete(filename);
 end
@@ -355,7 +356,7 @@ writetable(T_icd9, filename, 'Sheet', 'icd9','Range','A1');
 writetable(T_icd10, filename, 'Sheet', 'icd10','Range','A1');
 writetable(T_self, filename, 'Sheet', 'self','Range','A1');
 
-filename_new = [Out_open 'description_codes_new.xlsx'];
+filename_new = [Out_open 'description_codes_new_DATE.xlsx'];
 if exist(filename_new, 'file')==2
   delete(filename_new);
 end
