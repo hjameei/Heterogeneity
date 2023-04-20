@@ -38,7 +38,7 @@ end
 
 load([Out_private,'GPdata_all.mat']);
 
-grp_num=45;
+grp_num=122;
 %remove duplicate IDs and retain earliest diagnosis
 %read v2
 for g=1:grp_num
@@ -255,7 +255,7 @@ subID_readv2_v3_vec=subID_readv2_v3_vec(dup);
 
 %healthy ones wihtout anycodes
 subID_healthy = setdiff(subID_healthy_icd_self, subID_readv2_v3_vec);
-subID_healthy = setdiff(subID_healthy_icd_self, subID_mhq_vec);
+subID_healthy = setdiff(subID_healthy, subID_mhq_vec);
 
 
 filename = [Out_private, 'DiseaseGroupSubID.mat'];

@@ -50,7 +50,7 @@ switch x
 end
 
 load([Out_open,'icd_diseaseCode_mapped.mat']);
-dataFile=[In_private,'medical_data.csv'];
+dataFile=[In_private,'medical_data. csv'];
 ttds = datastore(dataFile,...
     'DatetimeType','text','ReadVariableNames',0);
 fprintf('Read datastore\n');
@@ -78,7 +78,7 @@ for i=1:length(code_self_v2)
             ind_healthy_self_noncancer = [ind_healthy_self_noncancer; j];
         end
         x=num_self(j,:);
-        x=str2double(x);
+%         x=str2double(x);
         val=intersect(x,code);
         if ~isempty(val)
             ind_sub=[ind_sub,j];

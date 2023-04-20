@@ -117,7 +117,7 @@ for i=1:length(code_icd10)
     
     readv2_icd10{i}=txt(ind(ind_single),1);
 end
-return
+
 % read v3 to icd 10
 readv3_icd10=cell(length(dGrp),1);
 [~,txt]=xlsread(filename,'read_ctv3_icd10');

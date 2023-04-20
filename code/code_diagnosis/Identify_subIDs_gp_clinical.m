@@ -39,6 +39,8 @@ switch x
         In_private = In_private_Hadis;
         In_open = In_open_Hadis;
         path_old_dx = path_old_dx_Hadis;
+        Out_open = Out_open_Hadis;
+        Out_private = Out_private_Hadis;
     otherwise
         In_private = In_private_Other;
         In_open = In_open_Other;
@@ -94,7 +96,7 @@ while hasdata(ttds)
     date_MRI=date_MRI_all(ind);
     
     %%%%%%
-    fprintf('Loop over disease group\n')
+    fprintf('Loop over disease group\n');
     %i=str2double(grp_num); %1:length(dx_labels)
     i=grp_num;
     fprintf('%s\n',dx_labels{i});
@@ -132,7 +134,7 @@ while hasdata(ttds)
                 %subid
                 subv2=[subv2;str2double(subid{j})];
             else
-                fprintf ('Read V2: Remove subject %d,ID:%s\n',j,subid{j})
+                fprintf ('Read V2: Remove subject %d,ID:%s\n',j,subid{j});
             end
         end
         
@@ -172,8 +174,8 @@ while hasdata(ttds)
  
     T=T+1;
     save([out,'subID_GPClinical',num2str(i),'_block',num2str(T),'.mat'],...
-        'subID_readv2','date_completed_readv2','subID_readv3','date_completed_readv3','subID_completed_gp')
-    fprintf('Complete data block %d, block size=%d\n\n',T,ttds.ReadSize)
+        'subID_readv2','date_completed_readv2','subID_readv3','date_completed_readv3','subID_completed_gp');
+    fprintf('Complete data block %d, block size=%d\n\n',T,ttds.ReadSize);
     
 
     
