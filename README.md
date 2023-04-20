@@ -37,7 +37,7 @@ This code goes through the diseases of interest provided in a file named "Diseas
     - dx_system
 - **vars_to_crosscheck.mat**:all variables in the code, only needed for Step 2.
 
-## Steps 2: code_diagnosis/Crosscheck_codes.m
+## Steps 1.2: code_diagnosis/Crosscheck_codes.m
 
 This code finds the similarities and discrepancies between the older version of the program and the this new version. The aim is to update the diseases of interest file, and this step doesn't need to be repeated, and is just documented.
 
@@ -51,6 +51,16 @@ This code finds the similarities and discrepancies between the older version of 
 - **description_codes_v1_v2.xlsx**: contains missing and overlaps between ICD9, ICD10, and self codes for the previous version of this program.
 
 After this step, we updated the diseases of interest file inclusion and exludion criteria based on missing values in both fields if they were matched with the description.
+
+
+## Steps 2: code_diagnosis/Create_excel_files
+
+This code creates an excel file for label, description, and diagnostic codes for the diseases of interest. 
+### Input: 
+- **vars_to_crosscheck.mat**
+
+### Output: 
+- **description_codes_updated.xlsx.xlsx**: contains the label, description, and the ICD9, ICD10, self, and mhq codes for the diseases of interest
 
 ## Steps 3: code_diagnosis/Map_icd_read2_read3.m
 
@@ -198,7 +208,7 @@ This code will combine subject IDs and dates from clinical GP data with other da
     - dx_organ
     - dx_system
 
-## Steps 9: code_find_imaging_genetics_subs/Identify_subIDs_from_all_sources.m
+## Steps 9: code_find_imaging_genetics_subs/Identify_subIDs_with_imaging_genetics.m
 
 This code will identify the subjects IDs with imaging data, genetics data, and both imaging and genetics data..
 
