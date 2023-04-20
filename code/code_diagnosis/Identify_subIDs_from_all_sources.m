@@ -40,7 +40,7 @@ end
 
 load([Out_private,'GPdata_all.mat']);
 
-grp_num=149;
+grp_num=158;
 %remove duplicate IDs and retain earliest diagnosis
 %read v2
 for g=1:grp_num
@@ -260,10 +260,36 @@ subID_healthy = setdiff(subID_healthy_icd_self, subID_mhq_vec);
 subID_healthy_icd_self_mhq = subID_healthy; 
 subID_healthy = setdiff(subID_healthy, subID_readv2_v3_vec); 
 
+% identify healthy individuals
+[~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Alt_label');
+included_project_maria=raw(2:end, 2);
+included_project_hadis=raw(2:end, 3);
+
+
+unhealthy_maria = [];
+unhealthy_hadis = [];
+for i=1:length(dx_labels)
+    if included_project_maria{i} ==1
+        unhealthy_maria = [unhealthy_maria subID_all{i}];
+    end
+    if included_project_hadis{i}==1
+        unhealthy_hadis = [unhealthy_hadis subID_all{i}];
+    end
+end
+
+unhealthy_maria=unique(unhealthy_maria);
+unhealthy_hadis=unique(unhealthy_hadis);
+ind_unhealthy_maria=intersect(subID,unhealthy_maria);
+ind_unhealthy_hadis=intersect(subID,unhealthy_hadis);
+healthy_maria = setdiff(subID, subID(ind_unhealthy_maria));
+healthy_hadis = setdiff(subID, subID(ind_unhealthy_hadis));
+
+
 filename = [Out_private, 'DiseaseGroupSubID.mat'];
 save(filename,  ...
     'subID_self', 'subID_icd', 'subID_icd9', 'subID_icd10', 'subID_mhq', 'subID_all', ...
     'age_diag_self', 'age_diag_icd9', 'age_diag_icd10', 'age_diag_mhq', 'age_diag_all', ...
     'date_diag_icd9', 'date_diag_icd10',   ...
-    'subID_healthy', 'dx_labels', 'dx_organ', 'dx_system', 'subID_healthy_icd_self_mhq')
+    'subID_healthy', 'dx_labels', 'dx_organ', 'dx_system', 'subID_healthy_icd_self_mhq', ...
+    'ind_unhealthy_maria', 'ind_unhealthy_hadis');
  

@@ -57,8 +57,8 @@ ttds = datastore(dataFile,...
 fprintf('Read datastore\n');
 
 
-s=readall(ttds); %use s=read(ttds) if just testing;
-% s=read(ttds);
+%s=readall(ttds); %use s=read(ttds) if just testing;
+ s=read(ttds);
 
 % % subjects with self-report diagnoses - non-cancer
 ind=find(contains(s{1,:},'20002-0.')==1);
@@ -341,7 +341,7 @@ subID_healthy_icd=subID(ind_healthy_icd);
 
 
 filename = [Out_private, 'subID_icd_self.mat'];
- save(filename,'dx_labels','dx_organ','dx_system',...
+ save(filename,'dx_labels','dx_organ','dx_system', 'subID',...
     'subID_healthy_icd9','subID_healthy_icd10','subID_healthy_self',...
     'subID_dx_icd9','subID_dx_icd10','subID_dx_self',...
     'date_completed_icd9','date_completed_icd10','age_diag_self', ...
