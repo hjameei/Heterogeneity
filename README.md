@@ -37,7 +37,11 @@ This code goes through the diseases of interest provided in a file named "Diseas
     - dx_system
 - **vars_to_crosscheck.mat**:all variables in the code, only needed for Step 2.
 
+<<<<<<< HEAD
 ## Steps 2: code_diagnosis/Create_excel_files.m
+=======
+## Steps 2: code_diagnosis/Crosscheck_codes.m
+>>>>>>> parent of 2746396... Merge remote-tracking branch 'origin/main-hadis' into main-hadis
 
 This code finds the similarities and discrepancies between the older version of the program and the this new version. The aim is to update the diseases of interest file, and this step doesn't need to be repeated, and is just documented.
 
