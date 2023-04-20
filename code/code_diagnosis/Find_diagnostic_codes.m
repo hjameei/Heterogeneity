@@ -1,9 +1,7 @@
 %Find codes for each diagnosis
-%STEP 1%
 
 clear all
 close all
-asrb=0;
 
 run('Set_data_path.m');
 
@@ -210,7 +208,7 @@ for i=1:length(dx_labels)
         end
     end
     
-    %manually include specific codes 
+    %manually include specific codes
     Include=rmmissing(string(dx_code_inc_icd10(i,:)));
     if ~isempty(Include)
         for criteria=1:size(Include,2)
@@ -222,7 +220,6 @@ for i=1:length(dx_labels)
             end
         end
     end
-    
     
     %index duplicated codes
     [~, dup]=unique(code_icd10{i});
@@ -255,7 +252,6 @@ for i=1:length(dx_labels)
     end
     code_icd10{i} = [code_icd10{i}; code_alternative];
     description_icd10{i}= [description_icd10{i}; desc_alternative];
-    
     
     %index duplicated codes
     [~, dup]=unique(code_icd10{i});

@@ -1,8 +1,9 @@
 
-%STEP 4%
+% RUN IN PARALLEL (on spartan)
+
 %This code will identify subject IDs with any one of the diagnoses 
 %Takes ~4h to run locally  
-%modify line s=read(ttds) if just testing code (this will read 1
+%modify line 26 to s=read(ttds) if just testing code (this will read 1
 %block of data)
 
 %inputs:
@@ -18,7 +19,6 @@
 clear all
 close all
 
-asrb=0;
 run('Set_data_path.m');
 
 prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Ye press 2\nFor Hadis press 3\nFor others press 4\n";
@@ -55,10 +55,9 @@ ttds = datastore(dataFile,...
     'DatetimeType','text','ReadVariableNames',0);
 fprintf('Read datastore\n');
 
-% s=readall(ttds); %use s=read(ttds) if just testing;
-% s=read(ttds);
-s=readall(ttds); %use s=read(ttds) if just testing;
 
+s=readall(ttds); %use s=read(ttds) if just testing;
+% s=read(ttds);
 
 % % subjects with self-report diagnoses - non-cancer
 ind=find(contains(s{1,:},'20002-0.')==1);
@@ -79,7 +78,7 @@ for i=1:length(code_self_v2)
             ind_healthy_self_noncancer = [ind_healthy_self_noncancer; j];
         end
         x=num_self(j,:);
-        
+%         x=str2double(x);
         val=intersect(x,code);
         if ~isempty(val)
             ind_sub=[ind_sub,j];

@@ -1,14 +1,11 @@
 function Identify_subIDs_gp_clinical(grp_num)
 
-%STEP 4 - can be run in parrallel to 'Identify_SUBIDs_icd_self.m'
 %This code will find subject IDs with diagnosis according to GP clinical
 %data
 %Run this one spartan with case=1...length of disease labels
 
 %inputs:
-%icd_diseaseCode_mapped.mat (output from Map_icd_read2_read3.m)
-    %to copy this file, open terminal and cd to: /Users/mq669/Dropbox (Partners HealthCare)/DOCUMENTS/POSTDOC_MNC/NHMRC Investigator grant/DATA MANAGEMENT/HETEROGENEITY2/Heterogeneity/outputs/Diagnosis
-    % then: scp icd_diseaseCode_mapped.mat dibiasem@spartan.hpc.unimelb.edu.au:/home/dibiasem/punim0042/UKBIOBANK/diagnosis_outNew/
+%icd_diseaseCode_mapped.mat
 %gp_clinical_03_08_21.txt (which is primary care data). These fields are updated regularly
 %and can be redownloaded if we have an updated .enc file. Instructions to
 %download primary care data are shown in 'primary_care_data.pdf'

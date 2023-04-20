@@ -104,6 +104,3 @@ writetable(T_icd9, filename_new, 'Sheet', 'icd9','Range','A1');
 writetable(T_icd10, filename_new, 'Sheet', 'icd10','Range','A1');
 writetable(T_self, filename_new, 'Sheet', 'self','Range','A1');
 writetable(T_mhq, filename_new, 'Sheet', 'mhq','Range','A1');
-
-%STEP 2
-%creat excel file containing disease codes alongside diagnostic labels 
