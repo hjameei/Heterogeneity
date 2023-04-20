@@ -281,8 +281,8 @@ unhealthy_maria=unique(unhealthy_maria);
 unhealthy_hadis=unique(unhealthy_hadis);
 ind_unhealthy_maria=intersect(subID,unhealthy_maria);
 ind_unhealthy_hadis=intersect(subID,unhealthy_hadis);
-healthy_maria = setdiff(subID, subID(ind_unhealthy_maria));
-healthy_hadis = setdiff(subID, subID(ind_unhealthy_hadis));
+subID_healthy_maria = setdiff(subID, subID(ind_unhealthy_maria));
+subID_healthy_hadis = setdiff(subID, subID(ind_unhealthy_hadis));
 
 
 filename = [Out_private, 'DiseaseGroupSubID.mat'];
@@ -291,5 +291,5 @@ save(filename,  ...
     'age_diag_self', 'age_diag_icd9', 'age_diag_icd10', 'age_diag_mhq', 'age_diag_all', ...
     'date_diag_icd9', 'date_diag_icd10',   ...
     'subID_healthy', 'dx_labels', 'dx_organ', 'dx_system', 'subID_healthy_icd_self_mhq', ...
-    'ind_unhealthy_maria', 'ind_unhealthy_hadis');
+    'subID_healthy_maria', 'subID_healthy_hadis');
  
