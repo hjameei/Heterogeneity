@@ -4,6 +4,7 @@ close all
 %This code will combine subject IDs and dates from clinical GP data with
 %other data (from self report, icd9, icd10 and MHQ)
  
+asrb=0;
 run('Set_data_path.m');
  
 prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Ye press 2\nFor Hadis press 3\nFor others press 4\n";
@@ -38,7 +39,7 @@ end
 
 load([Out_private,'GPdata_all.mat']);
 
-grp_num=122;
+grp_num=149;
 %remove duplicate IDs and retain earliest diagnosis
 %read v2
 for g=1:grp_num
@@ -254,14 +255,15 @@ end
 subID_readv2_v3_vec=subID_readv2_v3_vec(dup);
 
 %healthy ones wihtout anycodes
+subID_healthy = setdiff(subID_healthy_icd_self, subID_mhq_vec);
+subID_healthy_icd_self_mhq = subID_healthy;
 subID_healthy = setdiff(subID_healthy_icd_self, subID_readv2_v3_vec);
 subID_healthy = setdiff(subID_healthy, subID_mhq_vec);
-
 
 filename = [Out_private, 'DiseaseGroupSubID.mat'];
 save(filename,  ...
     'subID_self', 'subID_icd', 'subID_icd9', 'subID_icd10', 'subID_mhq', 'subID_all', ...
     'age_diag_self', 'age_diag_icd9', 'age_diag_icd10', 'age_diag_mhq', 'age_diag_all', ...
     'date_diag_icd9', 'date_diag_icd10',   ...
-    'subID_healthy', 'dx_labels', 'dx_organ', 'dx_system')
+    'subID_healthy', 'dx_labels', 'dx_organ', 'dx_system','subID_healthy_icd_self_mhq')
  
