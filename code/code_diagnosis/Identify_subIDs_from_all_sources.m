@@ -262,8 +262,8 @@ subID_healthy = setdiff(subID_healthy, subID_readv2_v3_vec);
 
 % identify healthy individuals
 [~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Alt_label');
-included_project_maria=raw(2:end, 2);
-included_project_hadis=raw(2:end, 3);
+included_project_maria=raw(2:end-1, 2);
+included_project_hadis=raw(2:end-1, 3);
 
 
 unhealthy_maria = [];
