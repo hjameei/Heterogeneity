@@ -45,7 +45,7 @@ d = dir([Out_private,'GPdata/GPdata/']);
 case_list = {d.name};
 ind = find(contains(case_list,'GPClinical'));
 case_list_tmp =case_list(ind);
-grp_num=149; %number of diagnoses
+grp_num=158; %number of diagnoses
 
 date_readv2_all={};
 date_readv3_all={};

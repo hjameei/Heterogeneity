@@ -39,7 +39,7 @@ end
 %diseases are captured by keywords
 [num,txt,raw]=xlsread([In_open,'Diseases_of_interest.xlsx']);
 dx_labels=txt(2:end,1);
-dx_key_words=txt(2:end,4:18);
+dx_key_words=txt(2:end,4:10);
 dx_organ=txt(2:end,2);
 dx_system=txt(2:end,3);
 

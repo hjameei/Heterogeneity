@@ -71,11 +71,11 @@ load([Out_private, 'DiseaseGroupSubID.mat']);
     
 
 %remove diagnostic subtypes
-DX_N=n_dx(1:45); tmp=age_diag_all;
+DX_N=n_dx(1:54); tmp=age_diag_all;
 original_matrix(:,46:end)=[];
 
 %DX_LABELS=['Healthy'; dx_labels];
-DX_LABELS=dx_labels(1:45);
+DX_LABELS=dx_labels(1:54);
 % %%%%%%%%%%%%%%%%%%%%%%%%%
 % %sort diagnoses by organ
 % 
