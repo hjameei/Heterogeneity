@@ -1,7 +1,5 @@
 %STEP 4%
 
-% RUN IN PARALLEL (on spartan)
-
 %This code will identify subject IDs with any one of the diagnoses 
 %Takes ~4h to run locally  
 %modify line 26 to s=read(ttds) if just testing code (this will read 1
@@ -21,6 +19,7 @@ clear all
 close all
 
 asrb=0;
+
 run('Set_data_path.m');
 
 prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Ye press 2\nFor Hadis press 3\nFor others press 4\n";
