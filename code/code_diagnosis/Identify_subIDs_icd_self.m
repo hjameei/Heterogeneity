@@ -51,7 +51,7 @@ switch x
 end
 
 load([Out_open,'icd_diseaseCode_mapped.mat']);
-dataFile=[In_private,'medical_data. csv'];
+dataFile=[In_private,'medical_data.csv'];
 ttds = datastore(dataFile,...
     'DatetimeType','text','ReadVariableNames',0);
 fprintf('Read datastore\n');
