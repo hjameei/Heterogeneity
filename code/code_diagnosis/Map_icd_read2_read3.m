@@ -1,5 +1,5 @@
 
-
+%STEP 3%
 %This code will find a mapping between codes from icd9, icd10 and self
 %report
 
@@ -15,7 +15,7 @@
 
 clear all
 close all
-
+asrb=0;
 run('Set_data_path.m');
 
 prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Ye press 2\nFor Hadis press 3\nFor others press 4\n";
@@ -117,7 +117,7 @@ for i=1:length(code_icd10)
     
     readv2_icd10{i}=txt(ind(ind_single),1);
 end
-return
+
 % read v3 to icd 10
 readv3_icd10=cell(length(dGrp),1);
 [~,txt]=xlsread(filename,'read_ctv3_icd10');
