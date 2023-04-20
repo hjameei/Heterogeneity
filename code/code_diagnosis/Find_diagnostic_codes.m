@@ -1,8 +1,10 @@
 %Find codes for each diagnosis
+
 %STEP 1%
 
 clear all
 close all
+
 asrb=0;
 
 run('Set_data_path.m');
@@ -210,7 +212,7 @@ for i=1:length(dx_labels)
         end
     end
     
-    %manually include specific codes 
+    %manually include specific codes
     Include=rmmissing(string(dx_code_inc_icd10(i,:)));
     if ~isempty(Include)
         for criteria=1:size(Include,2)
@@ -222,7 +224,6 @@ for i=1:length(dx_labels)
             end
         end
     end
-    
     
     %index duplicated codes
     [~, dup]=unique(code_icd10{i});
@@ -256,7 +257,6 @@ for i=1:length(dx_labels)
     code_icd10{i} = [code_icd10{i}; code_alternative];
     description_icd10{i}= [description_icd10{i}; desc_alternative];
     
-    
     %index duplicated codes
     [~, dup]=unique(code_icd10{i});
     
@@ -266,6 +266,42 @@ for i=1:length(dx_labels)
     
     
 end
+
+
+%ICD10 to ICD9
+
+[num_icd9_10,txt_icd9_10,raw_icd9_10]=xlsread([In_open,'primarycare_codings/all_lkps_maps_v3.xlsx'],'icd9_icd10');
+
+for i=1:length(dx_labels)
+    %adding alternative codes, which are available in ICD10
+    code_icd9_10= [];
+    desc_icd9_10 = [];
+    for c1=1:length(code_icd10{i})
+        ind_code=find(txt_icd10(:,1)==code_icd10{i}(c1));
+        if ~isempty(ind_code)
+             for j=1:length(ind_code)
+                ind_code_alt_cells = strfind(txt_icd9_10(:,3), convertCharsToStrings(txt_icd10(ind_code(j),2)));
+                ind_code_alt = find(~cellfun(@isempty,ind_code_alt_cells));
+                if ~isempty(txt_icd9_10(ind_code_alt,2))
+                    code_icd9_10=[code_icd9_10; txt_icd9_10(ind_code_alt,1)];
+                    desc_icd9_10=[desc_icd9_10; txt_icd9_10(ind_code_alt,2)];
+                 end
+            end
+        end
+    end
+    code_icd9{i} = [code_icd9{i}; code_icd9_10];
+    description_icd9{i}= [description_icd9{i}; desc_icd9_10];
+    
+    %index duplicated codes
+    [~, dup]=unique(code_icd9{i});
+    
+    %remove duplicated codes
+    code_icd9{i}=code_icd9{i}(dup);
+    description_icd9{i}=description_icd9{i}(dup);
+end
+
+
+
 
 filename = [Out_open 'vars_to_crosscheck.mat'];
 save(filename);
@@ -328,8 +364,3 @@ filename = [Out_open 'disease_codes.mat'];
 save(filename,'dx_labels','dx_organ','dx_system',...
               'code_self_v2','code_icd9','code_icd10','code_mhq',...
               'description_self','description_icd9','description_icd10','description_mhq');
-
-
-
-
-

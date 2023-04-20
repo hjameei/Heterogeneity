@@ -1,10 +1,12 @@
 clear all
 close all
+
 %STEP 2
 %creat excel file containing disease codes alongside diagnostic labels 
-asrb=0;
-run('Set_data_path.m');
 
+asrb=0;
+
+run('Set_data_path.m');
 
 prompt = "Please specify user for path definition purposes\nFor Maria press 1\nFor Ye press 2\nFor Hadis press 3\nFor others press 4\n";
 x = input(prompt);
@@ -99,7 +101,7 @@ T_self = table(labels_new_self, description_new_self, code_new_self);
 T_mhq = table(labels_new_mhq, description_new_mhq, code_new_mhq);
 
 
-filename_new = [Out_open 'description_codes_April10.xlsx'];
+filename_new = [Out_open 'description_codes_updated.xlsx'];
 
 writetable(T_icd9, filename_new, 'Sheet', 'icd9','Range','A1');
 writetable(T_icd10, filename_new, 'Sheet', 'icd10','Range','A1');
