@@ -63,7 +63,9 @@ colnames(df_numbers)[2] = "Organ"
 colnames(df_numbers)[3] = "System"
 colnames(df_numbers)[4] = "Imaging"
 colnames(df_numbers)[5] = "Genetics"
-colnames(df_numbers)[6] = "Both"
+colnames(df_numbers)[6] = "Imagning_Genetics"
+colnames(df_numbers)[7] = "Biochemical"
+colnames(df_numbers)[8] = "Biochemical_Genetics"
 
 
 
@@ -103,8 +105,6 @@ for (i in seq(1, length(imagings))){
   disease_organs = c(disease_organs, rep(df_numbers[i,2], df_numbers[i,4]))
   disease_systems = c(disease_systems, rep(df_numbers[i,3], df_numbers[i,4]))
 }
-
-
 imagings = ldply(imagings, data.frame)
 imagings = cbind(imagings, disease_labels, disease_organs, disease_systems)
 imagings$X2 = as.factor(imagings$X2)
@@ -143,6 +143,35 @@ imaging_genetics$X2 = as.factor(imaging_genetics$X2)
 imaging_genetics$disease_organs = factor(imaging_genetics$disease_organs, levels=dx_organs_factors)
 
 
+biochemical = cross_dsads$subID.biochemical
+disease_labels = c()
+disease_organs = c()
+disease_systems = c()
+for (i in seq(1, length(biochemical))){
+  disease_labels = c(disease_labels, rep(df_numbers[i,1], df_numbers[i,7]))
+  disease_organs = c(disease_organs, rep(df_numbers[i,2], df_numbers[i,7]))
+  disease_systems = c(disease_systems, rep(df_numbers[i,3], df_numbers[i,7]))
+}
+biochemical = ldply(biochemical, data.frame)
+biochemical = cbind(biochemical, disease_labels, disease_organs, disease_systems)
+biochemical$X2 = as.factor(biochemical$X2)
+biochemical$disease_organs = factor(biochemical$disease_organs, levels=dx_organs_factors)
+
+
+biochemical_genetics = cross_dsads$subID.biochemical.genetics
+disease_labels = c()
+disease_organs = c()
+disease_systems = c()
+for (i in seq(1, length(biochemical_genetics))){
+  disease_labels = c(disease_labels, rep(df_numbers[i,1], df_numbers[i,8]))
+  disease_organs = c(disease_organs, rep(df_numbers[i,2], df_numbers[i,8]))
+  disease_systems = c(disease_systems, rep(df_numbers[i,3], df_numbers[i,8]))
+}
+biochemical_genetics = ldply(biochemical_genetics, data.frame)
+biochemical_genetics = cbind(biochemical_genetics, disease_labels, disease_organs, disease_systems)
+biochemical_genetics$X2 = as.factor(biochemical_genetics$X2)
+biochemical_genetics$disease_organs = factor(biochemical_genetics$disease_organs, levels=dx_organs_factors)
+
 
 pdf(file=paste0(output_dir, "/Count_imaging.pdf"), height = 30 , width = 30)
 count_imaging = ggplot(data=imagings, aes(x=disease_labels, fill=X2))+
@@ -174,6 +203,35 @@ dev.off()
 
 pdf(file=paste0(output_dir, "/Count_imaging_genetics.pdf"), height = 30 , width = 30)
 count_imaging_genetics = ggplot(data=imaging_genetics, aes(x=disease_labels, fill=X2))+
+  geom_bar(position=position_dodge2(width = 0.7, preserve = "single", 
+                                    reverse=TRUE))+
+  scale_fill_discrete(name = "Sex",labels=c('Female', 'Male'))+# 0 is female
+  facet_grid(.~disease_organs, scales = "free", space = "free")+
+  xlab("Diagnosis")+
+  ylab("Number of participants")+
+  theme(axis.text.x = element_text(angle = 45,hjust=1),
+        text = element_text(size=20),
+        strip.text.x = element_text(angle = 90, size=12, face = "bold"))
+grid.arrange(count_imaging_genetics)
+dev.off()
+
+pdf(file=paste0(output_dir, "/Count_biochemical.pdf"), height = 30 , width = 30)
+count_imaging_genetics = ggplot(data=biochemical, aes(x=disease_labels, fill=X2))+
+  geom_bar(position=position_dodge2(width = 0.7, preserve = "single", 
+                                    reverse=TRUE))+
+  scale_fill_discrete(name = "Sex",labels=c('Female', 'Male'))+# 0 is female
+  facet_grid(.~disease_organs, scales = "free", space = "free")+
+  xlab("Diagnosis")+
+  ylab("Number of participants")+
+  theme(axis.text.x = element_text(angle = 45,hjust=1),
+        text = element_text(size=20),
+        strip.text.x = element_text(angle = 90, size=12, face = "bold"))
+grid.arrange(count_imaging_genetics)
+dev.off()
+
+
+pdf(file=paste0(output_dir, "/Count_biochemical_genetics.pdf"), height = 30 , width = 30)
+count_imaging_genetics = ggplot(data=biochemical_genetics, aes(x=disease_labels, fill=X2))+
   geom_bar(position=position_dodge2(width = 0.7, preserve = "single", 
                                     reverse=TRUE))+
   scale_fill_discrete(name = "Sex",labels=c('Female', 'Male'))+# 0 is female

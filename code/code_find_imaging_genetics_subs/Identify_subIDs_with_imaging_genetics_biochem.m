@@ -69,7 +69,7 @@ elseif  strcmp(varname,'physical')==1
         str=strcat('physical_vars_allsubs.csv');
 end
 
-T_biochemical=readtable([PATH,str]);
+T_biochemical=readtable([Out_private,str]);
 variable_names=T_biochemical.Properties.VariableNames(2:end);
 variables=T_biochemical{:,2:end};
 eid_biochem=T_biochemical.ID;
@@ -86,6 +86,7 @@ for var=1:size(variable_names,2) %loop over biochemical variables
     eid_with_biochemical=T_biochemical.ID(data_notMissing_r{var});
 end
 
+eid_with_biochemical_genetics = intersect(eid_with_biochemical, eid_genetics);
 
 %demographic_data
 load([In_private 'demographics.mat']);
@@ -97,15 +98,20 @@ subID_healthy=subID_healthy_maria;
 labels = ([{'Healthy'}; dx_labels]);
 organs = ([{'Healthy'}; dx_organ]);
 systems = ([{'Healthy'}; dx_system]);
-Number_data = zeros(size(dx_labels,1)+1,3);
+Number_data = zeros(size(dx_labels,1)+1,5);
 
 Number_data(1,1) = size(intersect(subID_healthy, eid_with_MRI_freesurfer_DK),1);
 Number_data(1,2) = size(intersect(subID_healthy, eid_genetics),1);
 Number_data(1,3) = size(intersect(subID_healthy, eid_with_MRI_freesurfer_DK_genetics),1);
+Number_data(1,4) = size(intersect(subID_healthy, eid_with_biochemical),1);
+Number_data(1,5) = size(intersect(subID_healthy, eid_with_biochemical_genetics),1);
+
 for i=1:size(dx_labels,1)
     Number_data(i+1, 1)=size(intersect(subID_all{i}, eid_with_MRI_freesurfer_DK),1);
     Number_data(i+1, 2)=size(intersect(subID_all{i}, eid_genetics),1);
     Number_data(i+1, 3)=size(intersect(subID_all{i}, eid_with_MRI_freesurfer_DK_genetics),1);
+    Number_data(i+1, 4)=size(intersect(subID_all{i}, eid_with_biochemical),1);
+    Number_data(i+1, 5)=size(intersect(subID_all{i}, eid_with_biochemical_genetics),1);
 end
 
 % second plot
@@ -122,6 +128,14 @@ elements=intersect(subID_healthy, eid_with_MRI_freesurfer_DK_genetics);
 [~,ind,~]=intersect(ID,elements);
 subID_imaging_genetics{1} =  [elements sex_all(ind)];
 
+elements=intersect(subID_healthy, eid_with_biochemical);
+[~,ind,~]=intersect(ID,elements);
+subID_biochemical{1} =  [elements sex_all(ind)];
+
+elements=intersect(subID_healthy, eid_with_biochemical_genetics);
+[~,ind,~]=intersect(ID,elements);
+subID_biochemical_genetics{1} =  [elements sex_all(ind)];
+
 for i=1:size(dx_labels,1)
     elements=intersect(subID_all{i}, eid_genetics);
     [~,ind,~]=intersect(ID,elements);
@@ -134,6 +148,14 @@ for i=1:size(dx_labels,1)
     elements=intersect(subID_all{i}, eid_with_MRI_freesurfer_DK_genetics);
     [~,ind,~]=intersect(ID,elements);
     subID_imaging_genetics{i+1} =  [elements sex_all(ind)];
+
+    elements=intersect(subID_all{i}, eid_with_biochemical);
+    [~,ind,~]=intersect(ID,elements);
+    subID_biochemical{i+1} =  [elements sex_all(ind)];
+
+    elements=intersect(subID_all{i}, eid_with_biochemical_genetics);
+    [~,ind,~]=intersect(ID,elements);
+    subID_biochemical_genetics{i+1} =  [elements sex_all(ind)];
 end
 
 
@@ -219,4 +241,5 @@ demographic_matrix = [ Num; age_mean; age_sd; sex_ratio_male; n_ethnicity_white;
 
 save([Out_private 'plot_data.mat'], 'Number_data', 'labels', 'organs', 'systems', ...
     'subID_genetics', 'subID_imaging', 'subID_imaging_genetics', ...
+    'subID_biochemical','subID_biochemical_genetics',...
     'demographic_matrix');
