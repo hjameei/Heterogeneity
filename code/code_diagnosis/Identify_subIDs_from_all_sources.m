@@ -297,7 +297,6 @@ unhealthy_hadis=unique(unhealthy_hadis);
 subID_healthy_maria = setdiff(subID, subID(ind_unhealthy_maria));
 subID_healthy_hadis = setdiff(subID, subID(ind_unhealthy_hadis));
 
-
 filename = [Out_private, 'DiseaseGroupSubID.mat'];
 save(filename,  ...
     'subID_self', 'subID_icd', 'subID_icd9', 'subID_icd10', 'subID_mhq', 'subID_all', ...
