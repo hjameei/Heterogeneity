@@ -28,7 +28,17 @@ cross_dsads <- readMat(data_path)
 
 dx_labels = do.call(rbind.data.frame, cross_dsads$labels)
 dx_organs = do.call(rbind.data.frame, cross_dsads$organs )
-dx_systems = do.call(rbind.data.frame, cross_dsads$system )
+systems = c()
+for (i in 1:nrow(dx_organs)){
+  if (length(cross_dsads$system[[i]][[1]]) ==0){
+    systems = c(systems, NA)
+  }
+  else{
+    systems = c(systems, cross_dsads$system[[i]][[1]])
+  }
+}
+dx_systems = as.data.frame(systems)
+colnames(dx_systems) <- colnames(dx_labels)
 
 for(i in seq(1, nrow(dx_organs))){
   if (grepl("blood", dx_organs[i,1], fixed = TRUE)){
@@ -134,7 +144,7 @@ imaging_genetics$disease_organs = factor(imaging_genetics$disease_organs, levels
 
 
 
-pdf(file=paste0(output_dir, "/Count_imaging.pdf"), height = 9 , width = 30)
+pdf(file=paste0(output_dir, "/Count_imaging.pdf"), height = 30 , width = 30)
 count_imaging = ggplot(data=imagings, aes(x=disease_labels, fill=X2))+
   geom_bar(position=position_dodge2(width = 0.7, preserve = "single", 
                                     reverse=TRUE))+
@@ -148,7 +158,7 @@ count_imaging = ggplot(data=imagings, aes(x=disease_labels, fill=X2))+
 grid.arrange(count_imaging)
 dev.off()
 
-pdf(file=paste0(output_dir, "/Count_genetics.pdf"), height = 9 , width = 30)
+pdf(file=paste0(output_dir, "/Count_genetics.pdf"), height = 30 , width = 30)
 count_genetics = ggplot(data=genetics, aes(x=disease_labels, fill=X2))+
   geom_bar(position=position_dodge2(width = 0.7, preserve = "single", 
                                     reverse=TRUE))+
@@ -162,7 +172,7 @@ count_genetics = ggplot(data=genetics, aes(x=disease_labels, fill=X2))+
 grid.arrange(count_genetics)
 dev.off()
 
-pdf(file=paste0(output_dir, "/Count_imaging_genetics.pdf"), height = 9 , width = 30)
+pdf(file=paste0(output_dir, "/Count_imaging_genetics.pdf"), height = 30 , width = 30)
 count_imaging_genetics = ggplot(data=imaging_genetics, aes(x=disease_labels, fill=X2))+
   geom_bar(position=position_dodge2(width = 0.7, preserve = "single", 
                                     reverse=TRUE))+
@@ -183,13 +193,9 @@ df_numbers = df_numbers[order(df_numbers$Organ),]
 rownames(df_numbers) <- NULL
 rownames(demographic_dataframe) <- NULL
 
-stargazer(df_numbers[,-c(3)],                 # Export txt
-          summary = FALSE,
-          type = "text",
-          out = paste0(output_dir, "/data_requency.txt"))
 
-stargazer(demographic_dataframe,                 # Export txt
-          summary = FALSE,
-          type = "text",
-          out = paste0(output_dir, "/data_demographic_txt.txt"))
+write.csv(df_numbers[,-c(3)], paste0(output_dir, "/data_requency.csv"), row.names=TRUE)
+write.csv(demographic_dataframe, paste0(output_dir, "/data_demographics.csv"), row.names=TRUE)
+
+
 
