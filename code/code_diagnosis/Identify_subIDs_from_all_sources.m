@@ -40,6 +40,7 @@ end
 
 load([Out_private,'GPdata_all.mat']);
 
+
 grp_num=158;
 %remove duplicate IDs and retain earliest diagnosis
 %read v2
@@ -296,6 +297,26 @@ unhealthy_hadis=unique(unhealthy_hadis);
 [~,ind_unhealthy_hadis,~]=intersect(subID,unhealthy_hadis);
 subID_healthy_maria = setdiff(subID, subID(ind_unhealthy_maria));
 subID_healthy_hadis = setdiff(subID, subID(ind_unhealthy_hadis));
+
+% % test
+% comorbid_healthy=zeros(length(subID_healthy_maria),length(dx_labels));
+% for i=1:length(subID_healthy_maria)
+%     
+%     id=subID_healthy_maria(i);
+%     
+%     for j=1:length(dx_labels)
+%         
+%         ind=find(subID_all{j}==id);
+%         
+%         if ~isempty(ind)
+%             comorbid_healthy(i,j)=1;
+%         end
+%     
+%     end
+%     
+% end
+ 
+%not_healthy=find(sum(comorbid_healthy(:,1:45),2)>=1);
 
 filename = [Out_private, 'DiseaseGroupSubID.mat'];
 save(filename,  ...

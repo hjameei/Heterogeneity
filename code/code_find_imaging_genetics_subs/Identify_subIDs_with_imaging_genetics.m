@@ -62,6 +62,7 @@ load([In_private 'demographics.mat']);
 %diagnosis data
 filename = [Out_private, 'DiseaseGroupSubID.mat'];
 load(filename);
+subID_healthy=subID_healthy_maria;
 labels = ([{'Healthy'}; dx_labels]);
 organs = ([{'Healthy'}; dx_organ]);
 systems = ([{'Healthy'}; dx_system]);
