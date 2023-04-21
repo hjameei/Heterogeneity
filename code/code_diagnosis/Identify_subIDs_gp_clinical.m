@@ -67,7 +67,7 @@ load(filename);
 
 
 % GP data
-dataFile=[In_private,'GP_clinical/gp_clinical_06_10_22.txt'];
+dataFile=[In_private,'GP_clinical/gp_clinical_20_04_23.txt'];
 ttds = tabularTextDatastore(dataFile,...
     'DatetimeType','text','ReadVariableNames',0);
 fprintf('Read datastore\n')
