@@ -113,11 +113,13 @@ date_birth=datetime(birth_year,birth_month,birth_day,'Format',formatOut);
 for i=1:grp_num
     [a, b, c]=intersect(eid_dates,subID_readv2{i});
     date_birth_cmp_readv2{i}=date_birth(b);
-    
+
     [a, b, c]=intersect(eid_dates,subID_readv3{i});
     date_birth_cmp_readv3{i}=date_birth(b);
 end
  
+
+
 %age at diagnosis GP data
  
 for g=1:grp_num
@@ -153,6 +155,17 @@ for g=1:grp_num
     end
 end
  
+%removing duplicates
+for i=1:grp_num
+    [a1,a2]=(unique(subID_readv2{i}));
+    subID_readv2{i} = subID_readv2{i}(a2);
+    date_completed_readv2{i} = date_completed_readv2{i}(a2);
+
+    [a1,a2]=(unique(subID_readv3{i}));
+    subID_readv3{i} = subID_readv3{i}(a2);
+    date_completed_readv3{i} = date_completed_readv3{i}(a2);
+end
+
  
 %NEED TO COMBINE WITH MHQ, ICD9,10 and self
  
@@ -237,7 +250,7 @@ for i=1:size(subID_icd9,2) %looping over dx_labels
 
     age_diag_all{i} = [age_diag_icd9{i}; age_diag_icd10{i}; age_diag_self{i}; age_readv2{i}; age_readv3{i}; age_diag_mhq{i}];
 
-    %index and removedduplicated codes
+    %index and removed duplicated codes
     [~, dup]=unique(subID_all{i});
     subID_all{i}=subID_all{i}(dup);
     age_diag_all{i}=age_diag_all{i}(dup);
@@ -270,17 +283,17 @@ unhealthy_maria = [];
 unhealthy_hadis = [];
 for i=1:length(dx_labels)
     if included_project_maria{i} ==1
-        unhealthy_maria = [unhealthy_maria subID_all{i}];
+        unhealthy_maria = [unhealthy_maria; subID_all{i}];
     end
     if included_project_hadis{i}==1
-        unhealthy_hadis = [unhealthy_hadis subID_all{i}];
+        unhealthy_hadis = [unhealthy_hadis; subID_all{i}];
     end
 end
 
 unhealthy_maria=unique(unhealthy_maria);
 unhealthy_hadis=unique(unhealthy_hadis);
-ind_unhealthy_maria=intersect(subID,unhealthy_maria);
-ind_unhealthy_hadis=intersect(subID,unhealthy_hadis);
+[~,ind_unhealthy_maria,~]=intersect(subID,unhealthy_maria);
+[~,ind_unhealthy_hadis,~]=intersect(subID,unhealthy_hadis);
 subID_healthy_maria = setdiff(subID, subID(ind_unhealthy_maria));
 subID_healthy_hadis = setdiff(subID, subID(ind_unhealthy_hadis));
 
