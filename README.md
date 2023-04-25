@@ -37,7 +37,7 @@ This code goes through the diseases of interest provided in a file named "Diseas
     - dx_system
 - **vars_to_crosscheck.mat**:all variables in the code, only needed for Step 2.
 
-## Steps 2: code_diagnosis/Crosscheck_codes.m
+## Steps 1.2: code_diagnosis/Crosscheck_codes.m (superseded)
 
 This code finds the similarities and discrepancies between the older version of the program and the this new version. The aim is to update the diseases of interest file, and this step doesn't need to be repeated, and is just documented.
 
@@ -46,11 +46,18 @@ This code finds the similarities and discrepancies between the older version of 
 - **self_report_medical_cancer_codes.xlsx**
 - **self_report_medical_noncancer_codes.xlsx**
 
-
 ### Output: 
 - **description_codes_v1_v2.xlsx**: contains missing and overlaps between ICD9, ICD10, and self codes for the previous version of this program.
 
-After this step, we updated the diseases of interest file inclusion and exludion criteria based on missing values in both fields if they were matched with the description.
+## Step 2: code_diagnosis/Create_excel_files.m
+Creates an Excel file for each diagnosis status separately for each diagnosis code, split by sheets
+
+### Input: 
+- **vars_to_crosscheck.mat**: generated in Step 1 
+
+### Output: 
+- **description_codes_<DATE>.xlsx**: contains the excel file for descriptions and codes for traits of interest.
+
 
 ## Steps 3: code_diagnosis/Map_icd_read2_read3.m
 
@@ -198,7 +205,7 @@ This code will combine subject IDs and dates from clinical GP data with other da
     - dx_organ
     - dx_system
 
-## Steps 9: code_find_imaging_genetics_subs/Identify_subIDs_from_all_sources.m
+## Steps 9: code_find_imaging_genetics_subs/Identify_subIDs_with_imaging_genetics.m (superseded)
 
 This code will identify the subjects IDs with imaging data, genetics data, and both imaging and genetics data..
 
@@ -206,7 +213,7 @@ This code will identify the subjects IDs with imaging data, genetics data, and b
 - **DiseaseGroupSubID.mat**: generated in Step 8.
 - **data_fields_53_52_34_dates.csv**
 - **w60698_20210809_subjects_to_remove_consent.mat**: subjects that withdrew their consent.
-- **chr_id_sex.csv**: participants with genetic data avialable.
+- **chr_id_sex.csv**: participants with genetic data available.
 - **variable_selection.xlsx**
 - **mb1958_MRI_freesurfer_DK.csv**
 - **demographics.mat**
@@ -224,7 +231,62 @@ This code will identify the subjects IDs with imaging data, genetics data, and b
     - organs
     - systems
 
-## Steps 10: Generate_figures/demographic figures.R
+## Step 10: code_find_imaging_genetics_subs/Identify_subIDs_with_imaging_genetics_biochem.m
+
+This code will identify the subject IDs with imaging data, genetics data, imaging and genetic data, biochemical data, and biochemical and genetics data.
+
+### Input:
+- **DiseaseGroupSubID.mat**: generated in Step 8.
+- **data_fields_53_52_34_dates.csv**
+- **w60698_20210809_subjects_to_remove_consent.mat**: subjects that withdrew their consent.
+- **chr_id_sex.csv**: participants with genetic data avialable.
+- **variable_selection.xlsx**
+- **mb1958_MRI_freesurfer_DK.csv**
+- **demographics.mat**
+
+### Output:
+
+- **plot_data.mat**
+    The generated file contains the following fields:
+    - subID_genetics
+    - subID_imaging
+    - subID_imaging_genetics
+    - subID_biochemical
+    - subID_biochemical_genetics
+    - eid_with_MRI_freesurfer_DK
+    - eid_genetics
+    - eid_with_MRI_freesurfer_DK_genetics
+    - eid_with_biochemical
+    - eid_with_biochemical_genetics
+    - Number_data
+    - demographic_matrix
+    - labels
+    - organs
+    - systems
+    
+## Step 11: code_diagnosis/SplitHealthyControlsForGWAS.m
+
+This code splits the data into two groups, one for GWAS analysis and one for polygenic risk profiling.
+
+### Input:
+- **plot_data.mat**: generated in Step 10.
+- **QC_passed_samples.csv**: the samples who pass both sample and SNP QC.
+- **DiseaseGroupSubID.mat**: generated in Step 8.
+- **chr_id_sex.csv**: participants with genetic data available.
+
+
+### Output:
+
+- **Split_GWAS_biochemical.mat**
+    The generated file contains the following fields:
+    - subID_GWAS
+    - subID_PRS_analysis
+    - age_GWAS
+    - age_PRS_analysis
+    - sex_GWAS
+    - sex_PRS_analysis
+
+## Steps 12: Generate_figures/demographic figures.R
 
 This code will generate demographic figures for data.
 

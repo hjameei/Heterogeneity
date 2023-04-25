@@ -227,6 +227,7 @@ n_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics = size(genetic_grouping(ind
 ratio_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics = n_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics /size(genetic_grouping(ind),1);
 
 
+
 Num = [size(eid_with_MRI_freesurfer_DK,1) size(eid_genetics,1) size(eid_with_MRI_freesurfer_DK_genetics,1)];
 age_mean = [age_mean_with_MRI_freesurfer_DK age_mean_with_genetics age_mean_with_MRI_freesurfer_DK_genetics];
 age_sd = [age_sd_with_MRI_freesurfer_DK age_sd_with_genetics age_sd_with_MRI_freesurfer_DK_genetics];
@@ -239,7 +240,10 @@ ratio_ethnicity_nonwhite = [ratio_ethnicity_nonwhite_with_MRI_freesurfer_DK rati
 
 demographic_matrix = [ Num; age_mean; age_sd; sex_ratio_male; n_ethnicity_white; ratio_ethnicity_white; n_ethnicity_nonwhite; ratio_ethnicity_nonwhite];
 
+
 save([Out_private 'plot_data.mat'], 'Number_data', 'labels', 'organs', 'systems', ...
     'subID_genetics', 'subID_imaging', 'subID_imaging_genetics', ...
-    'subID_biochemical','subID_biochemical_genetics',...
+    'subID_biochemical','subID_biochemical_genetics', ...
+    'eid_with_MRI_freesurfer_DK', 'eid_genetics', 'eid_with_MRI_freesurfer_DK_genetics', ...
+    'eid_with_biochemical','eid_with_biochemical_genetics',...
     'demographic_matrix');

@@ -282,9 +282,12 @@ included_project_hadis=raw(2:end-1, 3);
 
 unhealthy_maria = [];
 unhealthy_hadis = [];
+included_diagnosis_maria = [];
+
 for i=1:length(dx_labels)
     if included_project_maria{i} ==1
         unhealthy_maria = [unhealthy_maria; subID_all{i}];
+        included_diagnosis_maria = [included_diagnosis_maria; {dx_labels{i}}];
     end
     if included_project_hadis{i}==1
         unhealthy_hadis = [unhealthy_hadis; subID_all{i}];
@@ -324,5 +327,5 @@ save(filename,  ...
     'age_diag_self', 'age_diag_icd9', 'age_diag_icd10', 'age_diag_mhq', 'age_diag_all', ...
     'date_diag_icd9', 'date_diag_icd10',   ...
     'subID_healthy', 'dx_labels', 'dx_organ', 'dx_system', 'subID_healthy_icd_self_mhq', ...
-    'subID_healthy_maria', 'subID_healthy_hadis');
+    'subID_healthy_maria', 'included_diagnosis_maria', 'subID_healthy_hadis');
  
