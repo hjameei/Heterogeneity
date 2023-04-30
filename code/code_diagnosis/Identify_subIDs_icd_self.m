@@ -58,7 +58,7 @@ fprintf('Read datastore\n');
 
 
 s=readall(ttds); %use s=read(ttds) if just testing;
-% s=read(ttds);
+%s=read(ttds);
 
 
 % Date of assessment
@@ -193,6 +193,11 @@ fprintf('\nICD 9 diagnoses\n')
 ind=find(contains(s{1,:},'41271')==1);
 num=s{2:end,ind};
 num_icd9=string(num);
+
+[not_empty_r, ~]= find(num_icd9~="");
+subID_healthy_icd9_2 = setdiff(subID, subID(not_empty_r));
+
+
 header=s(1,ind);
 
 
@@ -256,6 +261,11 @@ ind=find(contains(s{1,:},'41270')==1);
 txt_icd10=s{2:end,ind};
 num_icd10 = string(txt_icd10);
 header=s(1,ind);
+
+[not_empty_r, ~]= find(num_icd10~="");
+subID_healthy_icd10_2 = setdiff(subID, subID(not_empty_r));
+
+subID_healthy_icd2 = intersect(subID_healthy_icd10_2, subID_healthy_icd9_2);
 
 %date of icd 10 diagnosis
 ind=find(contains(s{1,:},'41280-0.')==1);
@@ -375,4 +385,4 @@ filename = [Out_private, 'subID_icd_self.mat'];
     'subID_healthy_icd9','subID_healthy_icd10','subID_healthy_self',...
     'subID_dx_icd9','subID_dx_icd10','subID_dx_self',...
     'date_completed_icd9','date_completed_icd10','age_diag_self', ...
-    'age_diag_icd9', 'age_diag_icd10');
+    'age_diag_icd9', 'age_diag_icd10', 'subID_healthy_icd2');

@@ -80,6 +80,8 @@ df_demo = as.data.frame(cross_dsads$demographic.matrix);
 names(df_demo)[1] = "Imaging data"
 names(df_demo)[2] = "Genetics data"
 names(df_demo)[3] = "Imaging+Genetics data"
+names(df_demo)[4] = "Biochemical data"
+names(df_demo)[5] = "Biochemical+Genetics data"
 
 row_names = c("N", "Age Mean(SD)", " Sex (M %)", "Ethnicity",
               "White N(%)", "Non-white N(%)")
@@ -101,6 +103,9 @@ names(demographic_dataframe)[1] = ""
 names(demographic_dataframe)[2] = "Imaging data"
 names(demographic_dataframe)[3] = "Genetics data"
 names(demographic_dataframe)[4] = "Imaging+Genetics data"
+names(demographic_dataframe)[5] = "Biochemical data"
+names(demographic_dataframe)[6] = "Biochemical+Genetics data"
+
 
 imagings = cross_dsads$subID.imaging
 disease_labels = c()
@@ -269,7 +274,7 @@ rownames(df_numbers) <- NULL
 rownames(demographic_dataframe) <- NULL
 
 
-write.csv(df_numbers[,-c(3)], paste0(output_dir, "/data_requency.csv"), row.names=TRUE)
+write.csv(df_numbers[,-c(3)], paste0(output_dir, "/data_frequency.csv"), row.names=TRUE)
 write.csv(demographic_dataframe, paste0(output_dir, "/data_demographics.csv"), row.names=TRUE)
 
 
