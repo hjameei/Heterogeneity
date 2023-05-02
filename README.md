@@ -37,7 +37,7 @@ This code goes through the diseases of interest provided in a file named "Diseas
     - dx_system
 - **vars_to_crosscheck.mat**:all variables in the code, only needed for Step 2.
 
-## Steps 2: code_diagnosis/Crosscheck_codes.m
+## Steps 1.2: code_diagnosis/Crosscheck_codes.m (superseded)
 
 This code finds the similarities and discrepancies between the older version of the program and the this new version. The aim is to update the diseases of interest file, and this step doesn't need to be repeated, and is just documented.
 
@@ -46,11 +46,18 @@ This code finds the similarities and discrepancies between the older version of 
 - **self_report_medical_cancer_codes.xlsx**
 - **self_report_medical_noncancer_codes.xlsx**
 
-
 ### Output: 
 - **description_codes_v1_v2.xlsx**: contains missing and overlaps between ICD9, ICD10, and self codes for the previous version of this program.
 
-After this step, we updated the diseases of interest file inclusion and exludion criteria based on missing values in both fields if they were matched with the description.
+## Step 2: code_diagnosis/Create_excel_files.m
+Creates an Excel file for each diagnosis status separately for each diagnosis code, split by sheets
+
+### Input: 
+- **vars_to_crosscheck.mat**: generated in Step 1 
+
+### Output: 
+- **description_codes_<DATE>.xlsx**: contains the excel file for descriptions and codes for traits of interest.
+
 
 ## Steps 3: code_diagnosis/Map_icd_read2_read3.m
 
@@ -198,7 +205,7 @@ This code will combine subject IDs and dates from clinical GP data with other da
     - dx_organ
     - dx_system
 
-## Steps 9: code_find_imaging_genetics_subs/Identify_subIDs_from_all_sources.m
+## Steps 9: code_find_imaging_genetics_subs/Identify_subIDs_with_imaging_genetics.m (superseded)
 
 This code will identify the subjects IDs with imaging data, genetics data, and both imaging and genetics data..
 
@@ -206,7 +213,7 @@ This code will identify the subjects IDs with imaging data, genetics data, and b
 - **DiseaseGroupSubID.mat**: generated in Step 8.
 - **data_fields_53_52_34_dates.csv**
 - **w60698_20210809_subjects_to_remove_consent.mat**: subjects that withdrew their consent.
-- **chr_id_sex.csv**: participants with genetic data avialable.
+- **chr_id_sex.csv**: participants with genetic data available.
 - **variable_selection.xlsx**
 - **mb1958_MRI_freesurfer_DK.csv**
 - **demographics.mat**
@@ -224,15 +231,78 @@ This code will identify the subjects IDs with imaging data, genetics data, and b
     - organs
     - systems
 
-## Steps 10: Generate_figures/demographic figures.R
+## Step 10: code_find_imaging_genetics_subs/Identify_subIDs_with_imaging_genetics_biochem.m
+
+This code will identify the subject IDs with imaging data, genetics data, imaging and genetic data, biochemical data, and biochemical and genetics data.
+
+### Input:
+- **DiseaseGroupSubID.mat**: generated in Step 8.
+- **data_fields_53_52_34_dates.csv**
+- **w60698_20210809_subjects_to_remove_consent.mat**: subjects that withdrew their consent.
+- **chr_id_sex.csv**: participants with genetic data avialable. This file should be placed in In_private folder.
+- **variable_selection.xlsx**
+- **mb1958_MRI_freesurfer_DK.csv**
+- **demographics.mat**
+
+### Output:
+
+- **plot_data.mat**
+    The generated file contains the following fields:
+    - subID_genetics
+    - subID_imaging
+    - subID_imaging_genetics
+    - subID_biochemical
+    - subID_biochemical_genetics
+    - eid_with_MRI_freesurfer_DK
+    - eid_genetics
+    - eid_with_MRI_freesurfer_DK_genetics
+    - eid_with_biochemical
+    - eid_with_biochemical_genetics
+    - Number_data
+    - demographic_matrix
+    - labels
+    - organs
+    - systems
+    
+## Step 11: code_diagnosis/SplitHealthyControlsForGWAS.m
+
+This code splits the data into two groups, one for GWAS analysis and one for polygenic risk profiling.
+
+### Input:
+- **plot_data.mat**: generated in Step 10.
+- **QC_passed_samples.csv**: the samples who pass both sample and SNP QC. This file should be placed in In_private folder.
+- **DiseaseGroupSubID.mat**: generated in Step 8.
+- **chr_id_sex.csv**: participants with genetic data available. This file should be placed in In_private folder.
+
+
+### Output:
+
+- **SplitControlGroups.mat**
+    The generated file contains the following fields:
+    - control_groups_labels: label for each control group.
+    - control_groups: a cell array containing 21 cells, each corresponding to ID/sex/age of controls groups.
+    
+The generated controls group discription of each lable is as follows:
+    - **Control_1_subID_GWAS**: GWAS control group, randomly selecting 40k individuals who do not have neuroimaging data - to be used to **perform GWAS**
+    - **Control_2_subID_imaging**: Imaging control group encompassing all individuals who are classified as controls who also have imaging data – to be used for **normative modeling of brain data**
+    - **Control_3_subID_genetic**: Genetics control group encompassing all individuals not in the GWAS control group - to be used for **PRS clustering analysis**
+    - **Control_4_subID_imaging_genetics**: Imaging/genetics control group who also have both imaging and genetics data – to be used for **combined imaging/prs analysis**
+    - **Control_5_subID_biochemical**: Biochemical control group excluding those in the GWAS analysis – to be used for **normative modeling**
+    - **Control_6_subID_biochemical_genetics**: Biochemical/genetics control group excluding those in the GWAS analysis – to be used for **GWAS validation**
+    - **Control_7_subID__biochemical_genetics_imaging**: Biochemical/genetics/imaging control group excluding those in the GWAS analysis – to be used for **p-integration**
+Each control group as its respective age and sex variables saved as well in format of Control_<control_num>_age_<group> and Control_<control_num>_sex_<group> respectively. Please refer to **control_groups_labels** variable for the description of each respective field in **control_groups** file.
+
+## Steps 12: Generate_figures/demographic figures.R
 
 This code will generate demographic figures for data.
 
 ### Input:
-- **plot_data.mat**: generated in Step 9.
+- **plot_data.mat**: generated in Step 10.
+- **DiseaseGroupSubID.mat**: generated in Step 8.
+- **QC_passed_samples.csv**: list of individual IDs who passed sample and genetic QC. This file should be placed in In_private folder.
 
 ### Output:
 
-- **Count_imaging_genetics.pdf**: frequency of each diagnostic label for each imaging, genetics, and imaging_genetics data plotted by gender.
-- **data_requency.txt**: frequency of each diagnostic label for each imaging, genetics, and imaging_genetics data.
-- **data_demographic_txt.txt**: the data demographics (N, age, sex, ethnicity) average/SD for each imaging, genetics, and imaging_genetics data.
+- **Count_<DATA>.pdf**: frequency of each diagnostic label for each imaging, genetics, and imaging_genetics, biochemical, and biochemical_genetics data plotted by gender.
+- **data_frequency.csv**: frequency of each diagnostic label for each imaging, genetics, imaging_genetics, biochemical, and biochemical_genetics data.
+- **data_demographics.csv**: the data demographics (N, age, sex, ethnicity) average/SD for each imaging, genetics, and imaging_genetics, biochemical, and biochemical_genetics data.

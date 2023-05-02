@@ -48,16 +48,15 @@ eid_with_MRI_freesurfer_DK(b)=[];
 ind_eid_with_MRI_freesurfer_DK_visit_1(b)=[];
 
 
-
 %load genetics data - participants with genetics data available
 eid_genetics_table = readtable([In_private 'chr_id_sex.csv']);
-eid_genetics = table2array(eid_genetics_table(:,1));
+eid_with_genetics = table2array(eid_genetics_table(:,1));
 eid_sex = table2array(eid_genetics_table(:,2));
-ind = find(eid_genetics > 0);
-eid_genetics = eid_genetics(ind);
+ind = find(eid_with_genetics > 0);
+eid_with_genetics = eid_with_genetics(ind);
 % eid_sex = eid_sex(ind);
 
-eid_with_MRI_freesurfer_DK_genetics = intersect(eid_with_MRI_freesurfer_DK, eid_genetics);
+eid_with_MRI_freesurfer_DK_genetics = intersect(eid_with_MRI_freesurfer_DK, eid_with_genetics);
 
 %load biochem data
 
@@ -86,7 +85,7 @@ for var=1:size(variable_names,2) %loop over biochemical variables
     eid_with_biochemical=T_biochemical.ID(data_notMissing_r{var});
 end
 
-eid_with_biochemical_genetics = intersect(eid_with_biochemical, eid_genetics);
+eid_with_biochemical_genetics = intersect(eid_with_biochemical, eid_with_genetics);
 
 %demographic_data
 load([In_private 'demographics.mat']);
@@ -101,14 +100,14 @@ systems = ([{'Healthy'}; dx_system]);
 Number_data = zeros(size(dx_labels,1)+1,5);
 
 Number_data(1,1) = size(intersect(subID_healthy, eid_with_MRI_freesurfer_DK),1);
-Number_data(1,2) = size(intersect(subID_healthy, eid_genetics),1);
+Number_data(1,2) = size(intersect(subID_healthy, eid_with_genetics),1);
 Number_data(1,3) = size(intersect(subID_healthy, eid_with_MRI_freesurfer_DK_genetics),1);
 Number_data(1,4) = size(intersect(subID_healthy, eid_with_biochemical),1);
 Number_data(1,5) = size(intersect(subID_healthy, eid_with_biochemical_genetics),1);
 
 for i=1:size(dx_labels,1)
     Number_data(i+1, 1)=size(intersect(subID_all{i}, eid_with_MRI_freesurfer_DK),1);
-    Number_data(i+1, 2)=size(intersect(subID_all{i}, eid_genetics),1);
+    Number_data(i+1, 2)=size(intersect(subID_all{i}, eid_with_genetics),1);
     Number_data(i+1, 3)=size(intersect(subID_all{i}, eid_with_MRI_freesurfer_DK_genetics),1);
     Number_data(i+1, 4)=size(intersect(subID_all{i}, eid_with_biochemical),1);
     Number_data(i+1, 5)=size(intersect(subID_all{i}, eid_with_biochemical_genetics),1);
@@ -116,7 +115,7 @@ end
 
 % second plot
 
-elements=intersect(subID_healthy, eid_genetics);
+elements=intersect(subID_healthy, eid_with_genetics);
 [~,ind,~]=intersect(ID,elements);
 subID_genetics{1} =  [elements sex_all(ind)];
 
@@ -137,7 +136,7 @@ elements=intersect(subID_healthy, eid_with_biochemical_genetics);
 subID_biochemical_genetics{1} =  [elements sex_all(ind)];
 
 for i=1:size(dx_labels,1)
-    elements=intersect(subID_all{i}, eid_genetics);
+    elements=intersect(subID_all{i}, eid_with_genetics);
     [~,ind,~]=intersect(ID,elements);
     subID_genetics{i+1} =  [elements sex_all(ind)];
 
@@ -157,7 +156,6 @@ for i=1:size(dx_labels,1)
     [~,ind,~]=intersect(ID,elements);
     subID_biochemical_genetics{i+1} =  [elements sex_all(ind)];
 end
-
 
 
 %age of diagnosis
@@ -198,48 +196,86 @@ age_at_MRI_visit_2_years=age_at_MRI_visit_2_days/365.25;
  
 age_all_timepoints=[age_at_visit_0_years age_at_visit_1_years age_at_MRI_visit_1_years age_at_MRI_visit_2_years];
 
-
+% imaging group 
 [~, ind, ~] = intersect(eids,eid_with_MRI_freesurfer_DK);
-age_mean_with_MRI_freesurfer_DK = mean(age_at_MRI_visit_1_years(ind));
-age_sd_with_MRI_freesurfer_DK = std(age_at_MRI_visit_1_years(ind));
-sex_ratio_age_sd_with_MRI_freesurfer_DK = sum(sex_all(ind))/size(sex_all(ind),1);
+age_with_MRI_freesurfer_DK = age_at_MRI_visit_1_years(ind);
+sex_with_MRI_freesurfer_DK = sex_all(ind);
+age_mean_with_MRI_freesurfer_DK = mean(age_with_MRI_freesurfer_DK);
+age_sd_with_MRI_freesurfer_DK = std(age_with_MRI_freesurfer_DK);
+sex_ratio_age_sd_with_MRI_freesurfer_DK = sum(sex_with_MRI_freesurfer_DK)/size(sex_with_MRI_freesurfer_DK,1);
 n_ethnicity_white_with_MRI_freesurfer_DK = sum(genetic_grouping(ind));
 ratio_ethnicity_white_with_MRI_freesurfer_DK = sum(genetic_grouping(ind))/size(genetic_grouping(ind),1);
 n_ethnicity_nonwhite_with_MRI_freesurfer_DK = size(genetic_grouping(ind),1)-sum(genetic_grouping(ind));
 ratio_ethnicity_nonwhite_with_MRI_freesurfer_DK = n_ethnicity_nonwhite_with_MRI_freesurfer_DK /size(genetic_grouping(ind),1);
 
-[~, ind, ~] = intersect(eids,eid_genetics);
-age_mean_with_genetics = mean(age_at_visit_0_years(ind));
-age_sd_with_genetics = std(age_at_visit_0_years(ind));
-sex_ratio_age_sd_with_genetics = sum(sex_all(ind))/size(sex_all(ind),1);
+% genetic group
+[~, ind, ~] = intersect(eids,eid_with_genetics);
+age_with_genetics = age_at_visit_0_years(ind);
+sex_with_genetics = sex_all(ind);
+age_mean_with_genetics = mean(age_with_genetics);
+age_sd_with_genetics = std(age_with_genetics);
+sex_ratio_age_sd_with_genetics = sum(sex_with_genetics)/size(sex_with_genetics,1);
 n_ethnicity_white_with_genetics = sum(genetic_grouping(ind));
 ratio_ethnicity_white_with_genetics = sum(genetic_grouping(ind))/size(genetic_grouping(ind),1);
 n_ethnicity_nonwhite_with_genetics = size(genetic_grouping(ind),1)-sum(genetic_grouping(ind));
 ratio_ethnicity_nonwhite_with_genetics = n_ethnicity_nonwhite_with_genetics /size(genetic_grouping(ind),1);
 
+% imaging-genetics group
 [~, ind, ~] = intersect(eids,eid_with_MRI_freesurfer_DK_genetics);
-age_mean_with_MRI_freesurfer_DK_genetics = mean(age_at_MRI_visit_1_years(ind));
-age_sd_with_MRI_freesurfer_DK_genetics = std(age_at_MRI_visit_1_years(ind));
-sex_ratio_age_sd_with_MRI_freesurfer_DK_genetics = sum(sex_all(ind))/size(sex_all(ind),1);
+age_with_MRI_freesurfer_DK_genetics = age_at_MRI_visit_1_years(ind);
+sex_with_MRI_freesurfer_DK_genetics = sex_all(ind);
+age_mean_with_MRI_freesurfer_DK_genetics = mean(age_with_MRI_freesurfer_DK_genetics);
+age_sd_with_MRI_freesurfer_DK_genetics = std(age_with_MRI_freesurfer_DK_genetics);
+sex_ratio_age_sd_with_MRI_freesurfer_DK_genetics = sum(sex_with_MRI_freesurfer_DK_genetics)/size(sex_with_MRI_freesurfer_DK_genetics,1);
 n_ethnicity_white_with_MRI_freesurfer_DK_genetics = sum(genetic_grouping(ind));
 ratio_ethnicity_white_with_MRI_freesurfer_DK_genetics = sum(genetic_grouping(ind))/size(genetic_grouping(ind),1);
 n_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics = size(genetic_grouping(ind),1)-sum(genetic_grouping(ind));
 ratio_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics = n_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics /size(genetic_grouping(ind),1);
 
+% biochemical group
+[~, ind, ~] = intersect(eids,eid_with_biochemical);
+age_with_biochemical = age_at_visit_0_years(ind);
+sex_with_biochemical = sex_all(ind);
+age_mean_with_biochemical = mean(age_with_biochemical);
+age_sd_with_biochemical = std(age_with_biochemical);
+sex_ratio_age_sd_with_biochemical = sum(sex_with_biochemical)/size(sex_with_biochemical,1);
+n_ethnicity_white_with_biochemical = sum(genetic_grouping(ind));
+ratio_ethnicity_white_with_biochemical = sum(genetic_grouping(ind))/size(genetic_grouping(ind),1);
+n_ethnicity_nonwhite_with_biochemical = size(genetic_grouping(ind),1)-sum(genetic_grouping(ind));
+ratio_ethnicity_nonwhite_with_biochemical = n_ethnicity_nonwhite_with_biochemical /size(genetic_grouping(ind),1);
 
-Num = [size(eid_with_MRI_freesurfer_DK,1) size(eid_genetics,1) size(eid_with_MRI_freesurfer_DK_genetics,1)];
-age_mean = [age_mean_with_MRI_freesurfer_DK age_mean_with_genetics age_mean_with_MRI_freesurfer_DK_genetics];
-age_sd = [age_sd_with_MRI_freesurfer_DK age_sd_with_genetics age_sd_with_MRI_freesurfer_DK_genetics];
-sex_ratio_male = [sex_ratio_age_sd_with_MRI_freesurfer_DK sex_ratio_age_sd_with_genetics sex_ratio_age_sd_with_MRI_freesurfer_DK_genetics];
-n_ethnicity_white = [n_ethnicity_white_with_MRI_freesurfer_DK n_ethnicity_white_with_genetics n_ethnicity_white_with_MRI_freesurfer_DK_genetics];
-ratio_ethnicity_white = [ratio_ethnicity_white_with_MRI_freesurfer_DK ratio_ethnicity_white_with_genetics ratio_ethnicity_white_with_MRI_freesurfer_DK_genetics];
-n_ethnicity_nonwhite =[n_ethnicity_nonwhite_with_MRI_freesurfer_DK n_ethnicity_nonwhite_with_genetics n_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics];
-ratio_ethnicity_nonwhite = [ratio_ethnicity_nonwhite_with_MRI_freesurfer_DK ratio_ethnicity_nonwhite_with_genetics ratio_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics];
+% biochemical genetics group
+[~, ind, ~] = intersect(eids,eid_with_biochemical_genetics);
+age_with_biochemical_genetics = age_at_visit_0_years(ind);
+sex_with_biochemical_genetics = sex_all(ind);
+age_mean_with_biochemical_genetics = mean(age_with_biochemical_genetics);
+age_sd_with_biochemical_genetics = std(age_with_biochemical_genetics);
+sex_ratio_age_sd_with_biochemical_genetics = sum(sex_with_biochemical_genetics)/size(sex_with_biochemical_genetics,1);
+n_ethnicity_white_with_biochemical_genetics = sum(genetic_grouping(ind));
+ratio_ethnicity_white_with_biochemical_genetics = sum(genetic_grouping(ind))/size(genetic_grouping(ind),1);
+n_ethnicity_nonwhite_with_biochemical_genetics = size(genetic_grouping(ind),1)-sum(genetic_grouping(ind));
+ratio_ethnicity_nonwhite_with_biochemical_genetics = n_ethnicity_nonwhite_with_biochemical_genetics /size(genetic_grouping(ind),1);
 
+
+Num = [size(eid_with_MRI_freesurfer_DK,1) size(eid_with_genetics,1) size(eid_with_MRI_freesurfer_DK_genetics,1) size(eid_with_biochemical,1) size(eid_with_biochemical_genetics,1)];
+age_mean = [age_mean_with_MRI_freesurfer_DK age_mean_with_genetics age_mean_with_MRI_freesurfer_DK_genetics age_mean_with_biochemical, age_mean_with_biochemical_genetics];
+age_sd = [age_sd_with_MRI_freesurfer_DK age_sd_with_genetics age_sd_with_MRI_freesurfer_DK_genetics age_sd_with_biochemical age_sd_with_biochemical_genetics];
+sex_ratio_male = [sex_ratio_age_sd_with_MRI_freesurfer_DK sex_ratio_age_sd_with_genetics sex_ratio_age_sd_with_MRI_freesurfer_DK_genetics sex_ratio_age_sd_with_biochemical sex_ratio_age_sd_with_biochemical_genetics];
+n_ethnicity_white = [n_ethnicity_white_with_MRI_freesurfer_DK n_ethnicity_white_with_genetics n_ethnicity_white_with_MRI_freesurfer_DK_genetics n_ethnicity_white_with_biochemical n_ethnicity_white_with_biochemical_genetics];
+ratio_ethnicity_white = [ratio_ethnicity_white_with_MRI_freesurfer_DK ratio_ethnicity_white_with_genetics ratio_ethnicity_white_with_MRI_freesurfer_DK_genetics ratio_ethnicity_white_with_biochemical ratio_ethnicity_white_with_biochemical_genetics];
+n_ethnicity_nonwhite =[n_ethnicity_nonwhite_with_MRI_freesurfer_DK n_ethnicity_nonwhite_with_genetics n_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics  n_ethnicity_nonwhite_with_biochemical n_ethnicity_nonwhite_with_biochemical_genetics];
+ratio_ethnicity_nonwhite = [ratio_ethnicity_nonwhite_with_MRI_freesurfer_DK ratio_ethnicity_nonwhite_with_genetics ratio_ethnicity_nonwhite_with_MRI_freesurfer_DK_genetics ratio_ethnicity_nonwhite_with_biochemical ratio_ethnicity_nonwhite_with_biochemical_genetics];
 
 demographic_matrix = [ Num; age_mean; age_sd; sex_ratio_male; n_ethnicity_white; ratio_ethnicity_white; n_ethnicity_nonwhite; ratio_ethnicity_nonwhite];
 
+
 save([Out_private 'plot_data.mat'], 'Number_data', 'labels', 'organs', 'systems', ...
     'subID_genetics', 'subID_imaging', 'subID_imaging_genetics', ...
-    'subID_biochemical','subID_biochemical_genetics',...
+    'subID_biochemical','subID_biochemical_genetics', ...
+    'eid_with_MRI_freesurfer_DK', 'eid_with_genetics', 'eid_with_MRI_freesurfer_DK_genetics', ...
+    'eid_with_biochemical','eid_with_biochemical_genetics', ...
+    'age_with_MRI_freesurfer_DK', 'age_with_genetics', 'age_with_MRI_freesurfer_DK_genetics', ...
+    'age_with_biochemical','age_with_biochemical_genetics', ...
+    'sex_with_MRI_freesurfer_DK', 'sex_with_genetics', 'sex_with_MRI_freesurfer_DK_genetics', ...
+    'sex_with_biochemical','sex_with_biochemical_genetics', ...
     'demographic_matrix');

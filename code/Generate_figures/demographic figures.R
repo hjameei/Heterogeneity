@@ -1,15 +1,20 @@
 user<- readline(prompt="Enter user: 1 for Maria, 2 for Hadis, 3 for others\n")
 
 if (user == "1") {
+  In_private = '/Users/mq669/Dropbox (Partners HealthCare)/DOCUMENTS/POSTDOC_MNC/NHMRC Investigator grant/DATA MANAGEMENT/HETEROGENEITY2/Private_data/'
   Out_private ='/Users/mq669/Dropbox (Partners HealthCare)/DOCUMENTS/POSTDOC_MNC/NHMRC Investigator grant/DATA MANAGEMENT/HETEROGENEITY2/Private_data/Private_data_out'
 } else if(user == "2") {
+  In_private = '/Users/hadisjameei/Library/CloudStorage/OneDrive-TheUniversityofMelbourne/PhD research/UK Biobank/Medical data/'
   Out_private = '/Users/hadisjameei/Library/CloudStorage/OneDrive-TheUniversityofMelbourne/PhD research/UK Biobank/Medical data'
 } else {
+  In_private = ''
   Out_private = ''
 }
 
-data_path = paste0(Out_private, '/plot_data.mat')
+eid_qc_passed=read.csv(paste0(In_private, 'QC_passed_samples.csv'), header = FALSE)
 
+data_path = paste0(Out_private, '/plot_data.mat')
+disease_path = paste0(Out_private, '/DiseaseGroupSubID.mat')
 output_dir <- file.path(Out_private, 'Plots')
 
 if (!dir.exists(output_dir)){
@@ -25,6 +30,7 @@ library(gridExtra)
 library(stringr)
 
 cross_dsads <- readMat(data_path)
+
 
 dx_labels = do.call(rbind.data.frame, cross_dsads$labels)
 dx_organs = do.call(rbind.data.frame, cross_dsads$organs )
@@ -74,6 +80,8 @@ df_demo = as.data.frame(cross_dsads$demographic.matrix);
 names(df_demo)[1] = "Imaging data"
 names(df_demo)[2] = "Genetics data"
 names(df_demo)[3] = "Imaging+Genetics data"
+names(df_demo)[4] = "Biochemical data"
+names(df_demo)[5] = "Biochemical+Genetics data"
 
 row_names = c("N", "Age Mean(SD)", " Sex (M %)", "Ethnicity",
               "White N(%)", "Non-white N(%)")
@@ -95,6 +103,9 @@ names(demographic_dataframe)[1] = ""
 names(demographic_dataframe)[2] = "Imaging data"
 names(demographic_dataframe)[3] = "Genetics data"
 names(demographic_dataframe)[4] = "Imaging+Genetics data"
+names(demographic_dataframe)[5] = "Biochemical data"
+names(demographic_dataframe)[6] = "Biochemical+Genetics data"
+
 
 imagings = cross_dsads$subID.imaging
 disease_labels = c()
@@ -110,7 +121,6 @@ imagings = cbind(imagings, disease_labels, disease_organs, disease_systems)
 imagings$X2 = as.factor(imagings$X2)
 imagings$disease_organs = factor(imagings$disease_organs, 
                                  levels=dx_organs_factors)
-
 
 
 genetics = cross_dsads$subID.genetics
@@ -173,6 +183,14 @@ biochemical_genetics$X2 = as.factor(biochemical_genetics$X2)
 biochemical_genetics$disease_organs = factor(biochemical_genetics$disease_organs, levels=dx_organs_factors)
 
 
+biochemical_genetics2 = biochemical_genetics[biochemical_genetics$X1 %in% eid_qc_passed$V1,]
+biochemical_genetics2 = biochemical_genetics2[biochemical_genetics2$disease_labels %in% dx_labels[1:56,],]
+
+disease_groups <- readMat(disease_path)
+included_diagnosis = do.call(rbind.data.frame, disease_groups$included.diagnosis.maria )
+biochemical_genetics2 = biochemical_genetics2[biochemical_genetics2$disease_labels %in% included_diagnosis[,1],]
+
+
 pdf(file=paste0(output_dir, "/Count_imaging.pdf"), height = 30 , width = 30)
 count_imaging = ggplot(data=imagings, aes(x=disease_labels, fill=X2))+
   geom_bar(position=position_dodge2(width = 0.7, preserve = "single", 
@@ -230,17 +248,21 @@ grid.arrange(count_imaging_genetics)
 dev.off()
 
 
-pdf(file=paste0(output_dir, "/Count_biochemical_genetics.pdf"), height = 30 , width = 30)
-count_imaging_genetics = ggplot(data=biochemical_genetics, aes(x=disease_labels, fill=X2))+
+pdf(file=paste0(output_dir, "/Count_biochemical_genetics.pdf"), height = 30 , width = 45)
+count_imaging_genetics = ggplot(data=biochemical_genetics2, aes(x=disease_labels, fill=X2))+
   geom_bar(position=position_dodge2(width = 0.7, preserve = "single", 
                                     reverse=TRUE))+
   scale_fill_discrete(name = "Sex",labels=c('Female', 'Male'))+# 0 is female
   facet_grid(.~disease_organs, scales = "free", space = "free")+
   xlab("Diagnosis")+
   ylab("Number of participants")+
-  theme(axis.text.x = element_text(angle = 45,hjust=1),
-        text = element_text(size=20),
-        strip.text.x = element_text(angle = 90, size=12, face = "bold"))
+  theme(axis.text.x = element_text(angle = 45,hjust=1,size = 25, face = "bold"),
+        axis.title = element_text(size = 40), 
+        axis.text.y = element_text(size = 30),
+        title = element_text(size = 30),
+        text = element_text(size=25),
+        strip.text.x = element_text(angle = 90, size=25, face = "bold"),
+        legend.text = element_text(size=20))
 grid.arrange(count_imaging_genetics)
 dev.off()
 
@@ -252,7 +274,7 @@ rownames(df_numbers) <- NULL
 rownames(demographic_dataframe) <- NULL
 
 
-write.csv(df_numbers[,-c(3)], paste0(output_dir, "/data_requency.csv"), row.names=TRUE)
+write.csv(df_numbers[,-c(3)], paste0(output_dir, "/data_frequency.csv"), row.names=TRUE)
 write.csv(demographic_dataframe, paste0(output_dir, "/data_demographics.csv"), row.names=TRUE)
 
 

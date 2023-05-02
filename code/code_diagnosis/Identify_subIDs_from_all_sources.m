@@ -277,26 +277,21 @@ subID_healthy = setdiff(subID_healthy, subID_readv2_v3_vec);
 % identify healthy individuals
 [~,~,raw]=xlsread([In_open,'Diseases_of_interest.xlsx'],'Alt_label');
 included_project_maria=raw(2:end-1, 2);
-included_project_hadis=raw(2:end-1, 3);
-
 
 unhealthy_maria = [];
-unhealthy_hadis = [];
+included_diagnosis_maria = [];
+
 for i=1:length(dx_labels)
     if included_project_maria{i} ==1
         unhealthy_maria = [unhealthy_maria; subID_all{i}];
-    end
-    if included_project_hadis{i}==1
-        unhealthy_hadis = [unhealthy_hadis; subID_all{i}];
+        included_diagnosis_maria = [included_diagnosis_maria; {dx_labels{i}}];
     end
 end
 
 unhealthy_maria=unique(unhealthy_maria);
 unhealthy_hadis=unique(unhealthy_hadis);
 [~,ind_unhealthy_maria,~]=intersect(subID,unhealthy_maria);
-[~,ind_unhealthy_hadis,~]=intersect(subID,unhealthy_hadis);
 subID_healthy_maria = setdiff(subID, subID(ind_unhealthy_maria));
-subID_healthy_hadis = setdiff(subID, subID(ind_unhealthy_hadis));
 
 % % test
 % comorbid_healthy=zeros(length(subID_healthy_maria),length(dx_labels));
@@ -324,5 +319,5 @@ save(filename,  ...
     'age_diag_self', 'age_diag_icd9', 'age_diag_icd10', 'age_diag_mhq', 'age_diag_all', ...
     'date_diag_icd9', 'date_diag_icd10',   ...
     'subID_healthy', 'dx_labels', 'dx_organ', 'dx_system', 'subID_healthy_icd_self_mhq', ...
-    'subID_healthy_maria', 'subID_healthy_hadis');
+    'subID_healthy_maria', 'included_diagnosis_maria');
  

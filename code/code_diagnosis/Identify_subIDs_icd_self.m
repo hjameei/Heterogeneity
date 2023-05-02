@@ -57,8 +57,31 @@ ttds = datastore(dataFile,...
 fprintf('Read datastore\n');
 
 
-%s=readall(ttds); %use s=read(ttds) if just testing;
- s=read(ttds);
+s=readall(ttds); %use s=read(ttds) if just testing;
+%s=read(ttds);
+
+
+% Date of assessment
+dateFile=[In_private,'data_fields_53_52_34_dates.csv'];
+
+ttds = datastore(dateFile,...
+    'DatetimeType','text','ReadVariableNames',0);
+fprintf('Read datastore\n');
+dates=readall(ttds);
+dates_header=dates(1,:);
+dates=dates(2:end,:);
+formatOut='dd/MM/yyyy';
+assessment_ID = str2double(string(cell2mat(table2array(dates(2:end, 1)))));
+assessment_date_baseline=datetime(dates{:,4},'Format',formatOut); %date at assessment
+assessment_date_MRI_visit_1=datetime(dates{:,6},'Format',formatOut); %date at first MRI visit
+assessment_date_MRI_visit_2=datetime(dates{:,7},'Format',formatOut); %date at second MRI visit
+
+%date of birth
+birth_year=str2double(dates{:,2});
+birth_month=str2double(dates{:,3});
+birth_day=15*ones(length(birth_month),1);
+date_birth=datetime(birth_year,birth_month,birth_day,'Format',formatOut);
+
 
 % % subjects with self-report diagnoses - non-cancer
 ind=find(contains(s{1,:},'20002-0.')==1);
@@ -101,8 +124,32 @@ end
 
 %%%%%
 % self-reported cancer
+% code
 ind=find(contains(s{1,:},'20001-0.')==1);
 num=s{2:end,ind};
+
+% date or age
+ind=find(contains(s{1,:},'84-0.')==1);
+num_data_age_diagnosis=str2double(s{2:end,ind}); 
+
+[subID_assessment, ~, ind_assessment] = intersect(subID, assessment_ID);
+min_data_age_diagnosis=min(num_data_age_diagnosis,[],2);
+pre_assessment_diagnosis = zeros(size(min_data_age_diagnosis));
+
+for i=1:size(min_data_age_diagnosis,1)
+    if ~isnan(min_data_age_diagnosis(i))
+        if min_data_age_diagnosis(i) > 200
+            if min_data_age_diagnosis(i) < year(assessment_date_baseline(ind_assessment(i)))
+                pre_assessment_diagnosis(i) = 1;
+            end
+        else
+            if min_data_age_diagnosis(i)+birth_year(ind_assessment(i)) < year(assessment_date_baseline(ind_assessment(i)))
+                pre_assessment_diagnosis(i) = 1;
+            end
+        end
+    end
+    
+end
 
 %find the corresponding column for cancer in data
 [num_labels,txt_labels,raw_labels]=xlsread([In_open,'Diseases_of_interest.xlsx']);
@@ -116,9 +163,11 @@ ind_cancer_label=find(contains(dx_labels,newpat)==1);
 ind_cancer=find(contains(s{1,:},'134-0.')==1);
 ind_cancer2=str2double(s{2:end,ind_cancer});
 ind_cancer3=find(ind_cancer2>0);%number of self-reported cancer
-ind_healthy_self_cancer = find(ind_cancer2<1);
+ind_cancer4=find(pre_assessment_diagnosis==1);
 
-subID_cancer=subID(ind_cancer3);
+ind_healthy_self_cancer = find(pre_assessment_diagnosis==0);
+
+subID_cancer=subID(ind_cancer4);
 subID_dx_self{ind_cancer_label}=subID_cancer;
 
 %age of cancer when first diagnosed
@@ -135,7 +184,8 @@ ind_nonan=find(~isnan(age_cancer));
 age_cancer=age_cancer(ind_nonan);
 age_completed_self{ind_cancer_label}=age_cancer; % -1=uncertain or unknown
 
-clear num
+clear num num_data_age_diagnosis
+
 %%%%%
 
 %subjects with icd 9 coded diagnoses
@@ -143,35 +193,20 @@ fprintf('\nICD 9 diagnoses\n')
 ind=find(contains(s{1,:},'41271')==1);
 num=s{2:end,ind};
 num_icd9=string(num);
+
+[not_empty_r, ~]= find(num_icd9~="");
+subID_healthy_icd9_2 = setdiff(subID, subID(not_empty_r));
+
+
 header=s(1,ind);
 
 
 %date of icd 9 diagnosis
 ind=find(contains(s{1,:},'41281-0.')==1);
-formatOut='dd/MM/yyyy';
 %date_icd9=table2array(s(2:end,ind));
 dates=s{2:end,ind};
 date_icd9=datetime(dates,'Format',formatOut); 
 
-
-%Date of assessment
-dateFile=[In_private,'data_fields_53_52_34_dates.csv'];
-
-ttds = datastore(dateFile,...
-    'DatetimeType','text','ReadVariableNames',0);
-fprintf('Read datastore\n');
-dates=readall(ttds);
-dates_header=dates(1,:);
-dates=dates(2:end,:);
-assessment_date_baseline=datetime(dates{:,4},'Format',formatOut); %date at first MRI visit
-assessment_date_MRI_visit_1=datetime(dates{:,6},'Format',formatOut); %date at first MRI visit
-assessment_date_MRI_visit_2=datetime(dates{:,7},'Format',formatOut); %date at first MRI visit
-
-%date of birth
-birth_year=str2double(dates{:,2});
-birth_month=str2double(dates{:,3});
-birth_day=15*ones(length(birth_month),1);
-date_birth=datetime(birth_year,birth_month,birth_day,'Format',formatOut);
 
 %age of icd 9 diagnosis
 [rx, cx]=find(~isnat(date_icd9));
@@ -226,6 +261,11 @@ ind=find(contains(s{1,:},'41270')==1);
 txt_icd10=s{2:end,ind};
 num_icd10 = string(txt_icd10);
 header=s(1,ind);
+
+[not_empty_r, ~]= find(num_icd10~="");
+subID_healthy_icd10_2 = setdiff(subID, subID(not_empty_r));
+
+subID_healthy_icd2 = intersect(subID_healthy_icd10_2, subID_healthy_icd9_2);
 
 %date of icd 10 diagnosis
 ind=find(contains(s{1,:},'41280-0.')==1);
@@ -345,4 +385,4 @@ filename = [Out_private, 'subID_icd_self.mat'];
     'subID_healthy_icd9','subID_healthy_icd10','subID_healthy_self',...
     'subID_dx_icd9','subID_dx_icd10','subID_dx_self',...
     'date_completed_icd9','date_completed_icd10','age_diag_self', ...
-    'age_diag_icd9', 'age_diag_icd10');
+    'age_diag_icd9', 'age_diag_icd10', 'subID_healthy_icd2');
