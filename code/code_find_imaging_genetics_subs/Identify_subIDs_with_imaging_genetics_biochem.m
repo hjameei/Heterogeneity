@@ -82,8 +82,9 @@ for var=1:size(variable_names,2) %loop over biochemical variables
        
     %remove missing subjects for each biochemical measure
     data=variables(data_notMissing_r{var},var);
-    eid_with_biochemical=T_biochemical.ID(data_notMissing_r{var});
+    eid_with_biochemical{var}=T_biochemical.ID(data_notMissing_r{var});
 end
+
 
 eid_with_biochemical_genetics = intersect(eid_with_biochemical, eid_with_genetics);
 
