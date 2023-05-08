@@ -55,7 +55,10 @@ dates=readall(ttds);
 dates_header=dates(1,:);
 dates=dates(2:end,:);
 subID_qc_table=str2num(cell2mat(table2array(dates(:, 1))));
-sex_qc_table =str2num(cell2mat(table2array(dates(:, 3))));
+A=string(table2array(dates(:, 3)));
+A(A=="") = "-1";
+sex_qc_table =str2double(A);
+
 
 
 % age
@@ -197,4 +200,4 @@ control_groups{21,1} = sex_with_MRI_freesurfer_DK_genetics(ind);
 % sex_PRS_analysis = sex_qc_passed_biochemical_genetics(group2);
 
 
-save([Out_private 'SplitControlGroups.mat'], 'control_groups', 'control_groups_labels');
+save([Out_private 'SplitControlGroups.mat'], 'control_groups', 'control_groups_labels', 'subID_qc_table', 'age_qc_table', 'sex_qc_table');
