@@ -45,20 +45,42 @@ load([Out_private, 'DiseaseGroupSubID.mat']);
 %biochem and that passed genetic QC)
 
 %sex 
-eid_genetics_table = readtable([In_private 'chr_id_sex.csv']);
-subID_qc_table = table2array(eid_genetics_table(:,1));
-sex_qc_table = table2array(eid_genetics_table(:,2))-1;
 
-sex_qc_passed_biochemical_genetics = zeros(size(eid_qc_passed_biochemical_genetics));
-[~, ind, ~] = intersect(subID_qc_table,eid_qc_passed_biochemical_genetics);
-sex_qc_passed_biochemical_genetics = sex_qc_table(ind);
+dateFile=[In_private,'mb1958_Sample-QC.csv'];
+ 
+ttds = datastore(dateFile,...
+    'DatetimeType','text','ReadVariableNames',0);
+fprintf('Read datastore\n');
+dates=readall(ttds);
+dates_header=dates(1,:);
+dates=dates(2:end,:);
+subID_qc_table=str2num(cell2mat(table2array(dates(:, 1))));
+A=string(table2array(dates(:, 3)));
+A(A=="") = "-1";
+sex_qc_table =str2double(A);
 
-%age
-age_qc_passed_biochemical_genetics = zeros(size(eid_qc_passed_biochemical_genetics));
-for i=1:length(age_diag_all)
-    [x,a,b]=intersect(eid_qc_passed_biochemical_genetics, subID_all{i});
-    age_qc_passed_biochemical_genetics(a) = age_diag_all{i}(b);
-end
+
+
+% age
+dateFile=[In_private,'data_fields_53_52_34_dates.csv'];
+ ttds = datastore(dateFile,...
+    'DatetimeType','text','ReadVariableNames',0);
+fprintf('Read datastore\n');
+dates=readall(ttds);
+eid_dates=str2double(dates{2:end,1});
+dates_header=dates(1,:);
+dates=dates(2:end,:);
+ 
+%date of birth
+birth_year=str2double(dates{:,2});
+birth_month=str2double(dates{:,3});
+birth_day=15*ones(length(birth_month),1);
+formatOut='dd/MM/yyyy';
+date_birth=datetime(birth_year,birth_month,birth_day,'Format',formatOut);
+assessment_date_baseline=datetime(dates{:,4},'Format',formatOut); %date at assessment
+
+age_qc_table = calyears(between(date_birth, assessment_date_baseline));
+
 
 control_groups = {};
 control_groups_labels = [{'Control_1_subID_GWAS'; 'Control_1_age_GWAS'; 'Control_1_sex_GWAS';...
@@ -78,59 +100,58 @@ control_groups_labels = [{'Control_1_subID_GWAS'; 'Control_1_age_GWAS'; 'Control
 random_indexes = randperm(length(ID));
 ID_group1 = ID(random_indexes(1:40000));
 [~, ind, ~] = intersect(eid_with_genetics, ID_group1);
-control_groups{1} = ID_group1;
-control_groups{2} = age_with_genetics(ind);
-control_groups{3} = sex_with_genetics(ind);
+control_groups{1,1} = ID_group1;
+control_groups{2,1} = age_with_genetics(ind);
+control_groups{3,1} = sex_with_genetics(ind);
 
 
 % define control group 2
 
 [ID_healthy_imaging, ~, ind] = intersect(subID_healthy_maria, eid_with_MRI_freesurfer_DK);
-control_groups{4} = ID_healthy_imaging;
-control_groups{5} = age_with_MRI_freesurfer_DK(ind);
-control_groups{6} = sex_with_MRI_freesurfer_DK(ind);
+control_groups{4,1} = ID_healthy_imaging;
+control_groups{5,1} = age_with_MRI_freesurfer_DK(ind);
+control_groups{6,1} = sex_with_MRI_freesurfer_DK(ind);
 
 
 % define control group 3
 
 ID_group3 = ID(random_indexes(40001:end));
 [~, ind, ~] = intersect(eid_with_genetics, ID_group3);
-control_groups{7} = ID_group3;
-control_groups{8} = age_with_genetics(ind);
-control_groups{9} = sex_with_genetics(ind);
+control_groups{7,1} = ID_group3;
+control_groups{8,1} = age_with_genetics(ind);
+control_groups{9,1} = sex_with_genetics(ind);
 
 % define group 4
 ID_group4 = intersect(ID_healthy, eid_with_MRI_freesurfer_DK_genetics);
 ID_group4 = intersect(ID_group4, eid_qc_passed);
 [~, ind, ~] = intersect(eid_with_MRI_freesurfer_DK_genetics, ID_group4);
-control_groups{10} = ID_group4;
-control_groups{11} = age_with_MRI_freesurfer_DK_genetics(ind);
-control_groups{12} = sex_with_MRI_freesurfer_DK_genetics(ind);
+control_groups{10,1} = ID_group4;
+control_groups{11,1} = age_with_MRI_freesurfer_DK_genetics(ind);
+control_groups{12,1} = sex_with_MRI_freesurfer_DK_genetics(ind);
 
 % define group 5
-ID_group5 = intersect(ID_healthy, eid_with_biochemical);
-ID_group5 = setdiff(ID_group5, ID_group1);
-[~, ind, ~] = intersect(ID_group5, eid_with_biochemical);
-control_groups{13} = ID_group5;
-control_groups{14} = age_with_biochemical(ind);
-control_groups{15} = sex_with_biochemical(ind);
+ID_group5 = setdiff(subID_healthy_maria, ID_group1);
+[~, ind, ~] = intersect(ID_group5, subID_qc_table);
+control_groups{13,1} = ID_group5;
+control_groups{14,1} = age_qc_table(ind);
+control_groups{15,1} = sex_qc_table(ind);
 
 % define group 6
 ID_group6 = intersect(ID_healthy, eid_with_biochemical_genetics);
 ID_group6 = setdiff(ID_group6, ID_group1);
 [~, ind, ~] = intersect(ID_group6, eid_with_biochemical_genetics);
-control_groups{16} = ID_group6;
-control_groups{17} = age_with_biochemical_genetics(ind);
-control_groups{18} = sex_with_biochemical_genetics(ind);
+control_groups{16,1} = ID_group6;
+control_groups{17,1} = age_with_biochemical_genetics(ind);
+control_groups{18,1} = sex_with_biochemical_genetics(ind);
 
 % define group 7
 ID_group7 = intersect(ID_healthy, eid_with_biochemical_genetics);
 ID_group7 = intersect(ID_group7, eid_with_MRI_freesurfer_DK_genetics);
 ID_group7 = setdiff(ID_group7, ID_group1);
 [~, ind, ~] = intersect(ID_group7, eid_with_MRI_freesurfer_DK_genetics);
-control_groups{19} = ID_group7;
-control_groups{20} = age_with_MRI_freesurfer_DK_genetics(ind);
-control_groups{21} = sex_with_MRI_freesurfer_DK_genetics(ind);
+control_groups{19,1} = ID_group7;
+control_groups{20,1} = age_with_MRI_freesurfer_DK_genetics(ind);
+control_groups{21,1} = sex_with_MRI_freesurfer_DK_genetics(ind);
 
 % split the healthy controls into 2 groups:
 
@@ -179,4 +200,4 @@ control_groups{21} = sex_with_MRI_freesurfer_DK_genetics(ind);
 % sex_PRS_analysis = sex_qc_passed_biochemical_genetics(group2);
 
 
-save([Out_private 'SplitControlGroups.mat'], 'control_groups', 'control_groups_labels');
+save([Out_private 'SplitControlGroups.mat'], 'control_groups', 'control_groups_labels', 'subID_qc_table', 'age_qc_table', 'sex_qc_table');

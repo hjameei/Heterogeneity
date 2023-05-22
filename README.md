@@ -266,7 +266,7 @@ This code will identify the subject IDs with imaging data, genetics data, imagin
     
 ## Step 11: code_diagnosis/SplitHealthyControlsForGWAS.m
 
-This code splits the data into two groups, one for GWAS analysis and one for polygenic risk profiling.
+This code splits the data into several control groups for further analysis.
 
 ### Input:
 - **plot_data.mat**: generated in Step 10.
@@ -283,21 +283,35 @@ This code splits the data into two groups, one for GWAS analysis and one for pol
     - control_groups: a cell array containing 21 cells, each corresponding to ID/sex/age of controls groups.
     
 The generated controls group discription of each lable is as follows:
-    - **Control_1_subID_GWAS**: GWAS control group, randomly selecting 40k individuals who do not have neuroimaging data - to be used to **perform GWAS**
-    - **Control_2_subID_imaging**: Imaging control group encompassing all individuals who are classified as controls who also have imaging data – to be used for **normative modeling of brain data**
-    - **Control_3_subID_genetic**: Genetics control group encompassing all individuals not in the GWAS control group - to be used for **PRS clustering analysis**
-    - **Control_4_subID_imaging_genetics**: Imaging/genetics control group who also have both imaging and genetics data – to be used for **combined imaging/prs analysis**
-    - **Control_5_subID_biochemical**: Biochemical control group excluding those in the GWAS analysis – to be used for **normative modeling**
-    - **Control_6_subID_biochemical_genetics**: Biochemical/genetics control group excluding those in the GWAS analysis – to be used for **GWAS validation**
-    - **Control_7_subID__biochemical_genetics_imaging**: Biochemical/genetics/imaging control group excluding those in the GWAS analysis – to be used for **p-integration**
+- **Control_1_subID_GWAS**: GWAS control group, randomly selecting 40k individuals who do not have neuroimaging data - to be used to **perform GWAS**
+- **Control_2_subID_imaging**: Imaging control group encompassing all individuals who are classified as controls who also have imaging data – to be used for **normative modeling of brain data**
+- **Control_3_subID_genetic**: Genetics control group encompassing all individuals not in the GWAS control group - to be used for **PRS clustering analysis**
+- **Control_4_subID_imaging_genetics**: Imaging/genetics control group who also have both imaging and genetics data – to be used for **combined imaging/prs analysis**
+- **Control_5_subID_biochemical**: Biochemical control group excluding those in the GWAS analysis – to be used for **normative modeling**
+- **Control_6_subID_biochemical_genetics**: Biochemical/genetics control group excluding those in the GWAS analysis – to be used for **GWAS validation**
+- **Control_7_subID__biochemical_genetics_imaging**: Biochemical/genetics/imaging control group excluding those in the GWAS analysis – to be used for **p-integration**
 Each control group as its respective age and sex variables saved as well in format of Control_<control_num>_age_<group> and Control_<control_num>_sex_<group> respectively. Please refer to **control_groups_labels** variable for the description of each respective field in **control_groups** file.
 
-## Steps 12: Generate_figures/demographic figures.R
+## Step 12: code_find_imaging_genetics_subs/Identify_subIDs_for_split_data.m
+
+This code will aggregate demographics data for each control group.
+
+### Input:
+- **SplitControlGroups.mat**: generated in Step 11.
+- **demographics.mat**
+- **data_fields_53_52_34_dates.csv**
+
+
+### Output:
+- **plot_data_congrol_groups.mat** with the field demographic_matrix.
+
+## Steps 13: Generate_figures/demographic figures.R
 
 This code will generate demographic figures for data.
 
 ### Input:
 - **plot_data.mat**: generated in Step 10.
+- **plot_data_congrol_groups.mat**: generated in Step 12.
 - **DiseaseGroupSubID.mat**: generated in Step 8.
 - **QC_passed_samples.csv**: list of individual IDs who passed sample and genetic QC. This file should be placed in In_private folder.
 
@@ -306,3 +320,4 @@ This code will generate demographic figures for data.
 - **Count_<DATA>.pdf**: frequency of each diagnostic label for each imaging, genetics, and imaging_genetics, biochemical, and biochemical_genetics data plotted by gender.
 - **data_frequency.csv**: frequency of each diagnostic label for each imaging, genetics, imaging_genetics, biochemical, and biochemical_genetics data.
 - **data_demographics.csv**: the data demographics (N, age, sex, ethnicity) average/SD for each imaging, genetics, and imaging_genetics, biochemical, and biochemical_genetics data.
+- **data_demographics_control_groups.csv**: the data demographics (N, age, sex, ethnicity) average/SD for each control group data.

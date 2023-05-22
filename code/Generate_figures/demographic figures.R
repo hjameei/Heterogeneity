@@ -14,6 +14,7 @@ if (user == "1") {
 eid_qc_passed=read.csv(paste0(In_private, 'QC_passed_samples.csv'), header = FALSE)
 
 data_path = paste0(Out_private, '/plot_data.mat')
+path_control_group = paste0(Out_private, '/plot_data_congrol_groups.mat')
 disease_path = paste0(Out_private, '/DiseaseGroupSubID.mat')
 output_dir <- file.path(Out_private, 'Plots')
 
@@ -30,6 +31,7 @@ library(gridExtra)
 library(stringr)
 
 cross_dsads <- readMat(data_path)
+control_group <- readMat(path_control_group)
 
 
 dx_labels = do.call(rbind.data.frame, cross_dsads$labels)
@@ -72,7 +74,6 @@ colnames(df_numbers)[5] = "Genetics"
 colnames(df_numbers)[6] = "Imagning_Genetics"
 colnames(df_numbers)[7] = "Biochemical"
 colnames(df_numbers)[8] = "Biochemical_Genetics"
-
 
 
 df_demo = as.data.frame(cross_dsads$demographic.matrix);
@@ -249,7 +250,7 @@ dev.off()
 
 
 pdf(file=paste0(output_dir, "/Count_biochemical_genetics.pdf"), height = 30 , width = 45)
-count_imaging_genetics = ggplot(data=biochemical_genetics2, aes(x=disease_labels, fill=X2))+
+count_imaging_genetics = ggplot(data=biochemical_genetics, aes(x=disease_labels, fill=X2))+
   geom_bar(position=position_dodge2(width = 0.7, preserve = "single", 
                                     reverse=TRUE))+
   scale_fill_discrete(name = "Sex",labels=c('Female', 'Male'))+# 0 is female
@@ -278,4 +279,41 @@ write.csv(df_numbers[,-c(3)], paste0(output_dir, "/data_frequency.csv"), row.nam
 write.csv(demographic_dataframe, paste0(output_dir, "/data_demographics.csv"), row.names=TRUE)
 
 
+df_demo = as.data.frame(control_group$demographic.matrix)
 
+names(df_demo)[1] = "Control 1"
+names(df_demo)[2] = "Control 2"
+names(df_demo)[3] = "Control 3"
+names(df_demo)[4] = "Control 4"
+names(df_demo)[5] = "Control 5"
+names(df_demo)[6] = "Control 6"
+names(df_demo)[7] = "Control 7"
+
+row_names = c("N", "Age Mean(SD)", " Sex (M %)", "Ethnicity",
+              "White N(%)", "Non-white N(%)")
+N = as.character(round(df_demo[1,]))
+age_mean = as.character(format(round(df_demo[2,],3),nsmall=2))
+age_std = as.character(format(round(df_demo[3,],3),nsmall=2))
+age= paste0(age_mean, " (" ,age_std, ")")
+sex = as.character(format(round(df_demo[4,]*100,3),nsmall=2))
+Ethnicity_white_n = as.character(round(df_demo[5,],3))
+Ethnicity_white_freq = as.character(format(round(df_demo[6,]*100,3),nsmall=2))
+Ethnicity_white = paste0(Ethnicity_white_n, " (" ,Ethnicity_white_freq, " %)")
+Ethnicity_nonwhite_n = as.character(round(df_demo[7,],3))
+Ethnicity_nonwhite_freq = as.character(format(round(df_demo[8,]*100,3),nsmall=2))
+Ethnicity_nonwhite = paste0(Ethnicity_nonwhite_n, " (" ,Ethnicity_nonwhite_freq, " %)")
+Ethnicity = rep("", length(N))
+demographic_dataframe = as.data.frame(rbind(N, age, sex, Ethnicity, Ethnicity_white, Ethnicity_nonwhite))
+demographic_dataframe = cbind(row_names, demographic_dataframe)
+
+names(demographic_dataframe)[1] = ""
+names(demographic_dataframe)[2] = "Control 1"
+names(demographic_dataframe)[3] = "Control 2"
+names(demographic_dataframe)[4] = "Control 3"
+names(demographic_dataframe)[5] = "Control 4"
+names(demographic_dataframe)[6] = "Control 5"
+names(demographic_dataframe)[7] = "Control 6"
+names(demographic_dataframe)[8] = "Control 7"
+rownames(demographic_dataframe) <- NULL
+
+write.csv(demographic_dataframe, paste0(output_dir, "/data_demographics_control_groups.csv"), row.names=TRUE)
