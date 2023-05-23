@@ -94,11 +94,12 @@ control_groups_labels = [{'Control_1_subID_GWAS'; 'Control_1_age_GWAS'; 'Control
 
 % define control group 1
 
-[ID_healthy, ~,ind] = intersect(subID_healthy_maria, eid_qc_passed);
+subID_healthy_biochemical = intersect(subID_healthy_maria, eid_with_all_biochemicals);
+[ID_healthy, ~,ind] = intersect(subID_healthy_biochemical, eid_qc_passed);
 [ID, ind] = setdiff(ID_healthy, eid_with_MRI_freesurfer_DK);
 
 random_indexes = randperm(length(ID));
-ID_group1 = ID(random_indexes(1:40000));
+ID_group1 = ID(random_indexes(1:25000));
 [~, ind, ~] = intersect(eid_with_genetics, ID_group1);
 control_groups{1,1} = ID_group1;
 control_groups{2,1} = age_with_genetics(ind);
@@ -115,7 +116,7 @@ control_groups{6,1} = sex_with_MRI_freesurfer_DK(ind);
 
 % define control group 3
 
-ID_group3 = ID(random_indexes(40001:end));
+ID_group3 = ID(random_indexes(25001:end));
 [~, ind, ~] = intersect(eid_with_genetics, ID_group3);
 control_groups{7,1} = ID_group3;
 control_groups{8,1} = age_with_genetics(ind);
@@ -130,11 +131,15 @@ control_groups{11,1} = age_with_MRI_freesurfer_DK_genetics(ind);
 control_groups{12,1} = sex_with_MRI_freesurfer_DK_genetics(ind);
 
 % define group 5
-ID_group5 = setdiff(subID_healthy_maria, ID_group1);
-[~, ind, ~] = intersect(ID_group5, subID_qc_table);
-control_groups{13,1} = ID_group5;
-control_groups{14,1} = age_qc_table(ind);
-control_groups{15,1} = sex_qc_table(ind);
+for i=1:size(eid_with_biochemical,2)
+    ID_group_pre = intersect(subID_healthy_maria, eid_with_biochemical{i});
+    ID_group5 = setdiff(ID_group_pre, ID_group1);
+    [~, ind, ~] = intersect(ID_group5, subID_qc_table);
+    control_groups{13,i} = ID_group5;
+    control_groups{14,i} = age_qc_table(ind);
+    control_groups{15,i} = sex_qc_table(ind);
+end
+
 
 % define group 6
 ID_group6 = intersect(ID_healthy, eid_with_biochemical_genetics);
@@ -200,4 +205,4 @@ control_groups{21,1} = sex_with_MRI_freesurfer_DK_genetics(ind);
 % sex_PRS_analysis = sex_qc_passed_biochemical_genetics(group2);
 
 
-save([Out_private 'SplitControlGroups.mat'], 'control_groups', 'control_groups_labels', 'subID_qc_table', 'age_qc_table', 'sex_qc_table');
+save([Out_private 'SplitControlGroups.mat'], "control_groups", 'control_groups_labels', 'subID_qc_table', 'age_qc_table', 'sex_qc_table');

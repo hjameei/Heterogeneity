@@ -55,11 +55,11 @@ n_ethnicity_nonwhite = zeros(1,7);
 ratio_ethnicity_nonwhite = zeros(1,7);
 
 for i=1:7
-    [~,ind,~] = intersect(eids, control_groups{(i-1)*3+1});
-    Num(i) = size(control_groups{(i-1)*3+2},1);
-    age_mean(i) = mean(control_groups{(i-1)*3+2});
-    age_std(i) = std(control_groups{(i-1)*3+2});
-    sex_ratio_male(i) = sum(control_groups{(i-1)*3+3})/size(control_groups{(i-1)*3+3},1);
+    [~,ind,~] = intersect(eids, control_groups{(i-1)*3+1,1});
+    Num(i) = size(control_groups{(i-1)*3+2,1},1);
+    age_mean(i) = mean(control_groups{(i-1)*3+2,1});
+    age_std(i) = std(control_groups{(i-1)*3+2,1});
+    sex_ratio_male(i) = sum(control_groups{(i-1)*3+3,1})/size(control_groups{(i-1)*3+3,1},1);
     n_ethnicity_white(i) = sum(genetic_grouping(ind));
     ratio_ethnicity_white(i) = sum(genetic_grouping(ind))/size(genetic_grouping(ind),1);
     n_ethnicity_nonwhite(i) = size(genetic_grouping(ind),1)-sum(genetic_grouping(ind));
