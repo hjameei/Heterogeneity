@@ -99,7 +99,7 @@ subID_healthy_biochemical = intersect(subID_healthy_maria, eid_with_all_biochemi
 [ID, ind] = setdiff(ID_healthy, eid_with_MRI_freesurfer_DK);
 
 random_indexes = randperm(length(ID));
-ID_group1 = ID(random_indexes(1:25000));
+ID_group1 = ID(random_indexes(1:22000));
 [~, ind, ~] = intersect(eid_with_genetics, ID_group1);
 control_groups{1,1} = ID_group1;
 control_groups{2,1} = age_with_genetics(ind);
@@ -116,15 +116,16 @@ control_groups{6,1} = sex_with_MRI_freesurfer_DK(ind);
 
 % define control group 3
 
-ID_group3 = ID(random_indexes(25001:end));
+ID_group3 = ID(random_indexes(22001:end));
 [~, ind, ~] = intersect(eid_with_genetics, ID_group3);
 control_groups{7,1} = ID_group3;
 control_groups{8,1} = age_with_genetics(ind);
 control_groups{9,1} = sex_with_genetics(ind);
 
 % define group 4
-ID_group4 = intersect(ID_healthy, eid_with_MRI_freesurfer_DK_genetics);
+ID_group4 = intersect(subID_healthy_maria, eid_with_MRI_freesurfer_DK_genetics);
 ID_group4 = intersect(ID_group4, eid_qc_passed);
+ID_group4 = setdiff(ID_group4, ID_group1);
 [~, ind, ~] = intersect(eid_with_MRI_freesurfer_DK_genetics, ID_group4);
 control_groups{10,1} = ID_group4;
 control_groups{11,1} = age_with_MRI_freesurfer_DK_genetics(ind);
@@ -150,8 +151,9 @@ control_groups{17,1} = age_with_biochemical_genetics(ind);
 control_groups{18,1} = sex_with_biochemical_genetics(ind);
 
 % define group 7
-ID_group7 = intersect(ID_healthy, eid_with_biochemical_genetics);
+ID_group7 = intersect(subID_healthy_maria, eid_with_biochemical_genetics);
 ID_group7 = intersect(ID_group7, eid_with_MRI_freesurfer_DK_genetics);
+ID_group7 = intersect(ID_group7, eid_qc_passed);
 ID_group7 = setdiff(ID_group7, ID_group1);
 [~, ind, ~] = intersect(ID_group7, eid_with_MRI_freesurfer_DK_genetics);
 control_groups{19,1} = ID_group7;
