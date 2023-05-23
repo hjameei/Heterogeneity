@@ -283,13 +283,13 @@ This code splits the data into several control groups for further analysis.
     - control_groups: a cell array containing 21 cells, each corresponding to ID/sex/age of controls groups.
     
 The generated controls group discription of each lable is as follows:
-- **Control_1_subID_GWAS**: GWAS control group, randomly selecting 25k individuals who have biochemcial data but do not have neuroimaging data - to be used to **perform GWAS**
+- **Control_1_subID_GWAS**: GWAS control group, randomly selecting 25k individuals who have biochemcial data but do not have neuroimaging data - to be used to **perform GWAS**. This contains 3 cell arrays of length 62, which is the number of biochemical traits data availabe in UKB.
 - **Control_2_subID_imaging**: Imaging control group encompassing all individuals who are classified as controls who also have imaging data – to be used for **normative modeling of brain data**
 - **Control_3_subID_genetic**: Genetics control group encompassing all individuals not in the GWAS control group - to be used for **PRS clustering analysis**
 - **Control_4_subID_imaging_genetics**: Imaging/genetics control group who also have both imaging and genetics data – to be used for **combined imaging/prs analysis**
-- **Control_5_subID_biochemical**: Biochemical control groups excluding those in the GWAS analysis – to be used for **normative modeling**. This contains 3 cell arrays of length 62, which is the number of biochemical traits data availabe in UKB.
-- **Control_6_subID_biochemical_genetics**: Biochemical/genetics control group excluding those in the GWAS analysis – to be used for **GWAS validation**
-- **Control_7_subID__biochemical_genetics_imaging**: Biochemical/genetics/imaging control group excluding those in the GWAS analysis – to be used for **p-integration**
+- **Control_5_subID_biochemical**: Biochemical control groups excluding those in the GWAS analysis – to be used for **normative modeling** (3 cell arrays of length 62).
+- **Control_6_subID_biochemical_genetics**: Biochemical/genetics control group excluding those in the GWAS analysis – to be used for **GWAS validation** (3 cell arrays of length 62).
+- **Control_7_subID_biochemical_genetics_imaging**: Biochemical/genetics/imaging control group excluding those in the GWAS analysis – to be used for **p-integration** (3 cell arrays of length 62).
 Each control group as its respective age and sex variables saved as well in format of Control_<control_num>_age_<group> and Control_<control_num>_sex_<group> respectively. Please refer to **control_groups_labels** variable for the description of each respective field in **control_groups** file.
 
 ## Step 12: code_find_imaging_genetics_subs/Identify_subIDs_for_split_data.m
