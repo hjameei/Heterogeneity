@@ -321,3 +321,72 @@ This code will generate demographic figures for data.
 - **data_frequency.csv**: frequency of each diagnostic label for each imaging, genetics, imaging_genetics, biochemical, and biochemical_genetics data.
 - **data_demographics.csv**: the data demographics (N, age, sex, ethnicity) average/SD for each imaging, genetics, and imaging_genetics, biochemical, and biochemical_genetics data.
 - **data_demographics_control_groups.csv**: the data demographics (N, age, sex, ethnicity) average/SD for each control group data.
+ 
+ 
+ ### Biochem codes
+ 
+ ## Step 1: code_biochemical/read_in_biochemical_data.m
+ 
+ This code will read in biochemical data and prepare inputs for GAM modelling
+ 
+ ### Input:
+ 
+ ### Output:
+ 
+ - **.mat files for each trait: e.g., GAMLSSinput_Biochem_Alanine_aminotransferase_ALT.mat
+ 
+ ## Step 2: Run GAMLSS modelling in R (best to use a cluster to run each trait in parralel)
+ 
+ This code will run GAMLSS on a portion of healthy controls **Control_5_subID_biochemical** generated in diagnostic code
+ - It will select the most appropriate family distribution for each trait considered 
+ 
+  ### Input:
+  - **.mat files for each trait: e.g., GAMLSSinput_Biochem_Alanine_aminotransferase_ALT.mat
+ 
+  ### Output (for each trait):
+ -**GAMLSSout_FIT_eval_famDist_Platelet_count_Healthy.mat contains fit information evaluated for each family distribution
+ -**GAMLSSout_FIT_main_Alanine_aminotransferase_ALT_Healthy.mat contains: 
+        - fit information for main distribution (KS statistics)
+        - deviation scores for healthy individuals on which GAMs was run
+ -**GAMLSSout_main_OPTAlanine_aminotransferase_ALT__Healthy_predicted_sex0.mat contains:
+        - z_scores_unseen_subs
+        - z_scores_unseen_subs_BCT
+        - predicted_quantiles
+      Also repeated for sex1 (males)
+ 
+ ## Step 3a: code_biochemical/Deviations_biochemical/check_and_plot_std_of_deviations.m
+ 
+ This code is used to check the fit statistics from GAMLSS modelling and to generate inputs for Figure 1
+ 
+ ### Input:
+ 
+-**GAMLSSinput_Biochem_Alanine_aminotransferase_ALT.mat generated in Step 1
+-**GAMLSSout_FIT_eval_famDist_Platelet_count_Healthy.mat generated in Step 2
+-**GAMLSSout_main_OPTAlanine_aminotransferase_ALT__Healthy_predicted_sex0.mat generated in Step 2
+-**GAMLSSout_main_OPTAlanine_aminotransferase_ALT__Healthy_predicted_sex0.mat generated in Step 2
+
+ ### Output:
+ 
+ -**output_from_check_and_plot_std_of_deviations.m (used to generate main heterogeneity figure)
+ 
+ ## Step 3b: code_biochemical/Deviations_biochemical/COMORBIDITY_check_and_plot_std_of_deviations.m
+ 
+ This code is used to determine whether main results from Step 3a are consistent with those obtained after removing individuals with comorbodities from each diagnostic group. 
+ 
+  ### Input:
+ 
+  ### Output:
+ 
+ ## Step 3c code_biochemical/Deviations_biochemical/SAMPLE_SIZE_check_and_plot_std_of_deviations.m
+ 
+ This code is used to determine whether ain results from Step 3a are consistent with those obtained after using the sample number of individuals per diagnostic group to compute the SD
+ 
+ ## Step 3d: Figure
+ 
+ 
+ ## Step 4: code_biochemical/Deviations_biochemical/Heirarchy_check_and_plot_std_of_deviations.m
+ 
+ This code is used to estimate heterogeneity in specific diagnostic subtypes. Note that resampling with replacement is used to yeild confidence intervals for SD. 
+ 
+  ### Input:
+ 
