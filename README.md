@@ -1,8 +1,8 @@
-# Heterogeneity
 This project aims to map diagnosis heterogeneity in [UK Biobank dataset](https://bbams.ndph.ox.ac.uk/ams/).
 
+# Diagnostic codes
+
 ## Preliminary information 
-### Diagnostic codes
 The diagnosis information of individuals are reported in formats of four different sources:
 - GP Clinical data (readv2/readv3)
 - Self-reported diagnosis (Cancer/Noncancer)
@@ -323,7 +323,7 @@ This code will generate demographic figures for data.
 - **data_demographics_control_groups.csv**: the data demographics (N, age, sex, ethnicity) average/SD for each control group data.
  
  
- ### Biochem codes
+ # Biochem codes
  
  ## Step 1: code_biochemical/read_in_biochemical_data.m
  
@@ -341,7 +341,7 @@ This code will generate demographic figures for data.
  - It will select the most appropriate family distribution for each trait considered 
  
   ### Input:
-  - **.mat files for each trait: e.g., GAMLSSinput_Biochem_Alanine_aminotransferase_ALT.mat
+  -**.mat files for each trait: e.g., GAMLSSinput_Biochem_Alanine_aminotransferase_ALT.mat
  
   ### Output (for each trait):
  -**GAMLSSout_FIT_eval_famDist_Platelet_count_Healthy.mat contains fit information evaluated for each family distribution
@@ -384,9 +384,16 @@ This code will generate demographic figures for data.
  ## Step 3d: Figure
  
  
- ## Step 4: code_biochemical/Deviations_biochemical/Heirarchy_check_and_plot_std_of_deviations.m
+ ## Step 4b: code_biochemical/Deviations_biochemical/Heirarchy_check_and_plot_std_of_deviations.m
  
  This code is used to estimate heterogeneity in specific diagnostic subtypes. Note that resampling with replacement is used to yeild confidence intervals for SD. 
  
+ Need to define num_resamples (number of samples)
+ 
   ### Input:
+ 
+  ### Output:
+ 
+ ## Step 4b: Generate_figures/figure_heterogeneity_biochem_Diagnosticheirarchy_BRANCHING.m
+ 
  
